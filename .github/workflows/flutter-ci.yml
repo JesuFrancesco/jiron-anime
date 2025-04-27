@@ -85,9 +85,9 @@ jobs:
         with:
           name: Releases
           path: |
-            client/build/app/outputs/flutter-apk/app-release.apk
-            client/build/app/outputs/bundle/release/app-release.aab
-            client/build/ios_build.tar.gz
+            packages/client/build/app/outputs/flutter-apk/app-release.apk
+            packages/client/build/app/outputs/bundle/release/app-release.aab
+            packages/client/build/ios_build.tar.gz
 
         #11 Extract Version
       - name: Extraer la version del pubspec.yaml
@@ -120,7 +120,7 @@ jobs:
       - name: Crear Release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "client/build/app/outputs/flutter-apk/app-release.apk,client/build/app/outputs/bundle/release/app-release.aab,client/build/ios_build.tar.gz"
+          artifacts: "packages/client/build/app/outputs/flutter-apk/app-release.apk,packages/client/build/app/outputs/bundle/release/app-release.aab,packages/client/build/ios_build.tar.gz"
           tag: v${{ env.VERSION }}
           bodyFile: CHANGELOG.md
           makeLatest: true
