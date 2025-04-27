@@ -1,0 +1,89 @@
+@startuml jiron anime
+left to right direction
+skinparam packageStyle rectangle
+
+actor Usuario
+actor Soporte
+
+Usuario <|-- Comprador
+Usuario <|-- Vendedor
+Usuario <|-- Soporte
+
+rectangle "Jiron Anime" {
+    rectangle "Auth" {
+        usecase "Iniciar sesión" as UC101
+        usecase "Registrar nuevo usuario" as UC102
+        usecase "Recuperar contraseña" as UC103
+        usecase "Cambiar credenciales" as UC104
+        Usuario --> UC101
+        Usuario --> UC102
+        Usuario --> UC103
+        Usuario --> UC104
+    }
+    rectangle "Chat" {
+        usecase "Utilizar chat" as UC200
+        Usuario --> UC200
+        Soporte --> UC200
+    }
+    rectangle "Compra y venta" {
+        usecase "Ver productos" as UC301
+        usecase "Filtrar productos" as UC302
+        usecase "Guardar productos en lista de deseados" as UC303
+        usecase "Ver resultados personalizados" as UC304
+        usecase "Valorar productos" as UC305
+        usecase "Añadir productos al carrito" as UC306
+
+        usecase "Agregar producto a catálogo" as UC307
+        usecase "Retirar producto de catálogo" as UC308
+
+        UC302 .> UC301 : requires
+        UC303 .> UC301 : requires
+        UC304 .> UC301 : requires
+        UC305 .> UC301 : requires
+        UC306 .> UC301 : requires
+        UC308 .> UC307 : requires
+
+        Comprador --> UC301
+        Comprador --> UC302
+        Comprador --> UC303
+        Comprador --> UC304
+        Comprador --> UC305
+        Comprador --> UC306
+        Vendedor --> UC307
+        Vendedor --> UC308
+    }
+    rectangle "Feedback" {
+        usecase "Escribir reseña" as UC401
+        usecase "Subir imágenes a la reseña" as UC402
+        usecase "Responder reseña" as UC403
+        UC402 .> UC401 : requires
+        UC403 .> UC401 : requires
+        Comprador --> UC401
+        Comprador --> UC402
+        Vendedor --> UC403
+
+        usecase "Escribir pregunta" as UC501
+        usecase "Subir imágenes a la pregunta / consulta" as UC502
+        usecase "Responder pregunta" as UC503
+        UC502 .> UC501 : requires
+        UC503 .> UC501 : requires
+        Comprador --> UC501
+        Comprador --> UC502
+        Vendedor --> UC503
+
+        usecase "Compatir aplicacion" as UC504
+        Usuario --> UC504
+    }
+    rectangle "Payment / Pasarela de pago" {
+        usecase "Realizar pago" as UC601
+        usecase "Seleccionar tipo de pago" as UC602
+        usecase "Seleccionar lugar de entrega" as UC603
+        UC602 .> UC601 : includes
+        Comprador --> UC601
+        Comprador --> UC602
+        Comprador --> UC603
+    }
+}
+
+
+@enduml

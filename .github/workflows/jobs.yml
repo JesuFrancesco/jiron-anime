@@ -1,0 +1,41 @@
+name: Supabase Keep Alive Job
+
+on:
+  schedule:
+    - cron: "0 17 * * *"
+
+env:
+  SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+  SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+
+jobs:
+  supabase-keep-alive-job:
+    name: Supabase Keep Alive jobs
+    defaults:
+      run:
+        working-directory: packages/jobs/supabase-hearth-pulse
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Obtener código fuente (sparse-checkout a /jobs)
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: packages/jobs
+
+      - name: Instalar pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Instalar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "pnpm"
+          cache-dependency-path: packages/jobs/supabase-hearth-pulse/pnpm-lock.yaml
+
+      - name: Instalar dependencias
+        run: pnpm install
+
+      - name: Ejecutar script
+        run: pnpm run execute

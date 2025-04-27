@@ -1,0 +1,48 @@
+name: Deploy to Render
+
+on:
+  push:
+    branches: ["prod"]
+
+jobs:
+  azure-deploy:
+    defaults:
+      run:
+        working-directory: packages/server
+
+    runs-on: ubuntu-latest
+    name: "despliegue a azure"
+    steps:
+      - name: Obtener codigo de /server
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            packages/server
+
+      - name: Crear ambiente con Node 20.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: "20.x"
+
+      - name: Compilar proyecto y módulos
+        run: |
+          npm install
+          npm run build --if-present
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DIRECT_URL: ${{ secrets.DIRECT_URL }}
+
+      - name: Comprimir paquete de subida compilado
+        run: |
+          mkdir -p azure_package/prisma
+
+          cp -r dist node_modules azure_package
+          cp -r prisma/schema.prisma prisma/migrations azure_package/prisma
+          cp package.json azure_package
+
+      - name: Despliegue a Azure
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: jiron-anime
+          publish-profile: ${{ secrets.AZURE_WEB_APP_PUBLISH_PROFILE }}
+          package: ./packages/server/azure_package

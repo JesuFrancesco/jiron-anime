@@ -1,0 +1,429 @@
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
+}
+
+generator express {
+  provider = "node ./prisma/generator/dist/generator.js"
+  output   = "../src/generated/express"
+}
+
+generator dart {
+  provider = "node ./node_modules/@abcx3/prisma-generator-dart/index.js"
+  output   = "../../client/lib/model/entity"
+}
+
+// models
+model Profile {
+  id    String  @id @db.Uuid
+  email String  @unique
+  phone String?
+
+  provider String? @default("google")
+  imageUrl String? @default("https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg") @map("image_url")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  client  Client?
+  markets Market[]
+
+  messages Message[]
+
+  @@map("profiles")
+}
+
+model Client {
+  id Int @id @default(autoincrement())
+
+  username         String? @map("username")
+  referenceAddress String? @map("reference_address")
+
+  countryId      Int? @map("country_id")
+  distritoId     Int? @map("distrito_id")
+  provinciaId    Int? @map("provincia_id")
+  departamentoId Int? @map("departamento_id")
+
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  country     Country?      @relation(fields: [countryId], references: [id])
+  distrito    Distrito?     @relation(fields: [distritoId], references: [id])
+  provincia   Provincia?    @relation(fields: [provinciaId], references: [id])
+  departmento Departamento? @relation(fields: [departamentoId], references: [id])
+
+  shoppingCarts       ShoppingCart[]
+  wishlists           Wishlist[]
+  orders              Order[]
+  productRatings      ProductRating[]
+  productQuestions    ProductQuestion[]
+  clientNotifications ClientNotification[]
+  chatParticipants    ChatParticipant[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  profileId String @unique @map("profile_id") @db.Uuid
+
+  @@map("clients")
+}
+
+model Notification {
+  id          Int    @id @default(autoincrement())
+  title       String
+  description String
+
+  imageUrl            String               @map("image_url")
+  clientNotifications ClientNotification[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  @@map("notifications")
+}
+
+model Market {
+  id      Int     @id @default(autoincrement())
+  name    String
+  logoUrl String? @map("logo_url")
+
+  contactEmail String @map("contact_email")
+  contactPhone String @map("contact_phone")
+
+  profileId String    @map("profile_id") @db.Uuid
+  profile   Profile   @relation(fields: [profileId], references: [id])
+  products  Product[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  @@map("markets")
+}
+
+model Product {
+  id     Int @id @default(autoincrement())
+  status Int @default(1)
+
+  name            String
+  descripcion     String?
+  stock           Int
+  price           Decimal
+  dimensions      String?
+  warranty        Boolean?
+  discount        Int?
+  peso            Decimal?
+  formato         String?
+  cubierta        String?
+  anhoEdicion     Int?     @map("anho_edicion")
+  numeroEpisodios Int?     @map("numero_episodios")
+  numeroPaginas   Int?     @map("numero_paginas")
+
+  marketId Int?    @map("market_id")
+  market   Market? @relation(fields: [marketId], references: [id], onDelete: SetNull)
+
+  brandSellerId Int?         @map("brandseller_id")
+  brandSeller   BrandSeller? @relation(fields: [brandSellerId], references: [id])
+
+  productAttachments ProductAttachment[]
+  productTags        ProductTag[]
+  productQuestions   ProductQuestion[]
+  cartItems          CartItem[]
+  wishlistItems      WishlistItem[]
+  orderItems         OrderItem[]
+  productRatings     ProductRating[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  @@map("products")
+}
+
+model Tag {
+  id          Int          @id @default(autoincrement())
+  name        String       @unique
+  productTags ProductTag[]
+
+  @@map("tags")
+}
+
+model Country {
+  id           Int           @id @default(autoincrement())
+  name         String
+  code         String
+  brandSellers BrandSeller[]
+
+  clients Client[]
+
+  @@map("countries")
+}
+
+model ShoppingCart {
+  id        Int        @id @default(autoincrement())
+  clientId  Int        @unique @map("client_id")
+  client    Client     @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  cartItems CartItem[]
+
+  @@map("shopping_carts")
+}
+
+model Wishlist {
+  id Int @id @default(autoincrement())
+
+  clientId Int    @unique @map("client_id")
+  client   Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  wishlistItems WishlistItem[]
+
+  @@map("wishlists")
+}
+
+model Order {
+  id         Int     @id @default(autoincrement())
+  totalPrice Decimal @map("total_price")
+  status     String
+  clientId   Int?    @map("client_id")
+  client     Client? @relation(fields: [clientId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  orderItems OrderItem[]
+
+  @@map("orders")
+}
+
+model Chat {
+  id               Int               @id @default(autoincrement())
+  createdAt        DateTime          @default(now()) @map("created_at")
+  chatMessage      ChatMessage[]
+  chatParticipants ChatParticipant[]
+
+  @@map("chats")
+}
+
+model Message {
+  id                 Int                 @id @default(autoincrement())
+  text               String
+  createdAt          DateTime            @default(now()) @map("created_at")
+  updatedAt          DateTime            @default(now()) @map("updated_at")
+  status             Int
+  profileId          String?             @map("profile_id") @db.Uuid
+  profile            Profile?            @relation(fields: [profileId], references: [id], onDelete: SetNull)
+  messageAttachments MessageAttachment[]
+  chatMessages       ChatMessage[]
+
+  @@map("messages")
+}
+
+// location
+model Departamento {
+  id         Int         @id @default(autoincrement())
+  name       String      @unique
+  provincias Provincia[]
+  distritos  Distrito[]
+  clients    Client[]
+
+  @@map("departamentos")
+}
+
+model Provincia {
+  id             Int          @id @default(autoincrement())
+  name           String       @unique
+  departamentoId Int          @map("departamento_id")
+  departamento   Departamento @relation(fields: [departamentoId], references: [id])
+  distritos      Distrito[]
+  clients        Client[]
+
+  @@map("provincias")
+}
+
+model Distrito {
+  id   Int    @id @default(autoincrement())
+  name String
+
+  provinciaId Int       @map("provincia_id")
+  provincia   Provincia @relation(fields: [provinciaId], references: [id])
+
+  departamentoId Int          @map("departamento_id")
+  departamento   Departamento @relation(fields: [departamentoId], references: [id])
+  clients        Client[]
+
+  @@map("distritos")
+}
+
+// many to many 
+
+model ChatMessage {
+  chatId    Int @map("chat_id")
+  messageId Int @map("message_id")
+
+  chat    Chat    @relation(fields: [chatId], references: [id])
+  message Message @relation(fields: [messageId], references: [id])
+
+  @@id([chatId, messageId])
+  @@map("chat_messages")
+}
+
+model BrandSeller {
+  id                Int       @id @default(autoincrement())
+  name              String
+  description       String?
+  referenceLocation String?   @map("reference_location")
+  countryId         Int?      @map("country_id")
+  country           Country?  @relation(fields: [countryId], references: [id])
+  products          Product[]
+
+  @@map("brand_sellers")
+}
+
+model MessageAttachment {
+  id        Int     @id @default(autoincrement())
+  blobUrl   String
+  filename  String
+  type      String
+  messageId Int     @map("message_id")
+  message   Message @relation(fields: [messageId], references: [id])
+
+  @@map("message_attachments")
+}
+
+model ClientNotification {
+  clientId       Int          @map("client_id")
+  notificationId Int          @map("notification_id")
+  hasSeen        Boolean      @map("has_seen")
+  client         Client       @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  notification   Notification @relation(fields: [notificationId], references: [id])
+
+  @@id([clientId, notificationId])
+  @@map("client_notifications")
+}
+
+model ChatParticipant {
+  chatId   Int @map("chat_id")
+  clientId Int @map("client_id")
+
+  chat   Chat   @relation(fields: [chatId], references: [id])
+  client Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  @@id([chatId, clientId])
+  @@map("chat_participants")
+}
+
+model ProductQuestion {
+  id Int @id @default(autoincrement())
+
+  subject String @default("Consulta")
+  text    String
+
+  productId Int  @map("product_id")
+  clientId  Int? @map("client_id")
+
+  product         Product         @relation(fields: [productId], references: [id], onDelete: Cascade)
+  client          Client?         @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  questionReplies QuestionReply[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  @@map("product_questions")
+}
+
+model CartItem {
+  cartId    Int @map("cart_id")
+  productId Int @map("product_id")
+
+  amount       Int
+  addedAt      DateTime     @default(now()) @map("added_at")
+  shoppingCart ShoppingCart @relation(fields: [cartId], references: [id])
+  product      Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@id([cartId, productId])
+  @@map("cart_items")
+}
+
+model ProductTag {
+  categoryId Int @map("category_id")
+  productId  Int @map("product_id")
+
+  tag     Tag     @relation(fields: [categoryId], references: [id])
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@id([categoryId, productId])
+  @@map("product_tags")
+}
+
+model WishlistItem {
+  wishlistId Int @map("wishlist_id")
+  productId  Int @map("product_id")
+
+  addedAt DateTime @default(now()) @map("added_at")
+
+  wishlist Wishlist @relation(fields: [wishlistId], references: [id], onDelete: Cascade)
+  product  Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@id([wishlistId, productId])
+  @@map("wishlist_items")
+}
+
+model OrderItem {
+  amount    Int
+  orderId   Int @map("order_id")
+  productId Int @map("product_id")
+
+  order   Order   @relation(fields: [orderId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
+
+  @@id([orderId, productId])
+  @@map("order_items")
+}
+
+model ProductAttachment {
+  imageUrl  String  @map("image_url")
+  productId Int     @map("product_id")
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@id([productId, imageUrl])
+  @@map("product_attachments")
+}
+
+model QuestionReply {
+  id              Int             @id @default(autoincrement())
+  text            String
+  createdAt       DateTime        @default(now()) @map("created_at")
+  questionId      Int             @map("question_id")
+  productQuestion ProductQuestion @relation(fields: [questionId], references: [id])
+
+  @@map("question_replies")
+}
+
+model ProductRating {
+  id Int @id @default(autoincrement())
+
+  score     Int
+  text      String
+  createdAt DateTime @default(now()) @map("created_at")
+
+  client            Client?            @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  product           Product            @relation(fields: [productId], references: [id])
+  ratingAttachments RatingAttachment[]
+
+  clientId  Int? @map("client_id")
+  productId Int  @map("product_id")
+
+  @@map("product_ratings")
+}
+
+model RatingAttachment {
+  ratingId Int    @map("rating_id")
+  imageUrl String @map("blob_url")
+
+  productRating ProductRating @relation(fields: [ratingId], references: [id], onDelete: Cascade)
+
+  @@id([ratingId, imageUrl])
+  @@map("rating_attachments")
+}
