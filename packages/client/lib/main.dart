@@ -35,6 +35,7 @@ Future<void> main() async {
         AndroidFlutterLocalNotificationsPlugin
       >()
       ?.requestNotificationsPermission();
+
   await LocaleNotificationService().init();
 
   initializeSupabase();

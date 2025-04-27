@@ -1,3 +1,3 @@
 #!/bin/bash
 
-flutter run --dart-define-from-file .env
+flutter run --dart-define-from-file=.env

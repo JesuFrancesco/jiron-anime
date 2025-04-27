@@ -2,7 +2,7 @@ name: Deploy to Render
 
 on:
   push:
-    branches: ["prod"]
+    branches: ["azure-prod"]
 
 jobs:
   azure-deploy:

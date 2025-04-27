@@ -30,35 +30,48 @@ class AuthService {
     currentProfile.value = Profile.fromJson(data);
   }
 
-  static Future<void> browserGoogleSignIn() async {
-    try {
-      await supabase.auth.signInWithOAuth(
-        OAuthProvider.google,
-        redirectTo: "jironanime://com.example.jiron_anime",
-      );
-      await AuthController.reloadData();
-      Get.offAll(() => const HomePage(), predicate: (r) => false);
-    } catch (e) {
-      Get.dialog(ErrorDialog(message: "Error al iniciar sesión: $e"));
-    }
-  }
+  // static Future<void> browserGoogleSignIn() async {
+  //   try {
+  //     await supabase.auth.signInWithOAuth(
+  //       OAuthProvider.google,
+  //       redirectTo: "janime-app://main",
+  //     );
+  //     await AuthController.reloadData();
+  //     Get.offAll(() => const HomePage(), predicate: (r) => false);
+  //   } catch (e) {
+  //     Get.dialog(ErrorDialog(message: "Error al iniciar sesión: $e"));
+  //   }
+  // }
 
   static Future nativeGoogleSignIn() async {
     try {
       final GoogleSignIn googleSignIn = GoogleSignIn(
-        serverClientId: Config.googleServerClientID,
+        serverClientId: Config.googleWebClientId,
+        clientId: Config.googleAndroidClientId,
       );
+
       final googleUser = await googleSignIn.signIn();
+      assert(googleUser != null, "No se ha encontrado el usuario de Google");
+
       final googleAuth = await googleUser?.authentication;
 
       if (googleAuth?.accessToken == null || googleAuth?.idToken == null) {
         throw Exception('Google sign-in failed: Missing access or ID token');
       }
+      final gAccessToken = googleAuth?.accessToken;
+      assert(gAccessToken != null, "No se ha encontrado el token de acceso");
+
+      final gIdToken = googleAuth?.idToken;
+      assert(gIdToken != null, "No se ha encontrado el token de acceso");
+
+      print("Google access token: $gAccessToken");
+      print("Google id token: $gIdToken");
+      print("Google user: ${googleUser?.email}");
 
       await supabase.auth.signInWithIdToken(
         provider: OAuthProvider.google,
-        idToken: googleAuth!.idToken!,
-        accessToken: googleAuth.accessToken!,
+        idToken: gIdToken!,
+        accessToken: gAccessToken,
       );
 
       Get.offAll(() => const HomePage(), predicate: (r) => false);
@@ -72,7 +85,7 @@ class AuthService {
     try {
       await supabase.auth.signInWithOAuth(
         OAuthProvider.discord,
-        redirectTo: "jironanime://com.example.jiron_anime",
+        redirectTo: "janime-app://main",
       );
       Get.offAll(() => const HomePage(), predicate: (r) => false);
     } catch (e) {

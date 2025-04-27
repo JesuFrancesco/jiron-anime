@@ -14,16 +14,19 @@ class LocaleNotificationService {
   LocaleNotificationService._internal();
 
   Future<void> init() async {
-    const initializationSettingsAndroid =
-        AndroidInitializationSettings('app_icon');
+    const initializationSettingsAndroid = AndroidInitializationSettings(
+      '@mipmap/ic_launcher',
+    );
 
     const initializationSettings = InitializationSettings(
       android: initializationSettingsAndroid,
     );
 
-    await flutterLocalNotificationsPlugin.initialize(initializationSettings,
-        onDidReceiveBackgroundNotificationResponse: selectNotification,
-        onDidReceiveNotificationResponse: selectNotification);
+    await flutterLocalNotificationsPlugin.initialize(
+      initializationSettings,
+      onDidReceiveBackgroundNotificationResponse: selectNotification,
+      onDidReceiveNotificationResponse: selectNotification,
+    );
   }
 
   static Future selectNotification(NotificationResponse payload) async {

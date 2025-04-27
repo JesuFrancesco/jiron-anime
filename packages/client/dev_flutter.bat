@@ -1,2 +1,2 @@
 @echo off
-flutter run --dart-define-from-file .env
+flutter run --dart-define-from-file=.env

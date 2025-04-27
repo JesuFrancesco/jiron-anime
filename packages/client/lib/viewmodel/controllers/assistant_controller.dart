@@ -44,8 +44,8 @@ class AssistantController extends GetxController {
         );
       }
     } catch (e) {
-      print("Algo salió mal");
-      print(e);
+      print("Algo salió mal $e");
+      printError();
     }
   }
 }

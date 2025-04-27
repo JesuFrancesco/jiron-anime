@@ -34,7 +34,7 @@ class _SignInPageState extends State<SignInPage> with TickerProviderStateMixin {
                 ),
                 const Image(image: AssetImage("assets/image/logo.png")),
                 TextButton.icon(
-                  onPressed: AuthService.browserGoogleSignIn,
+                  onPressed: AuthService.nativeGoogleSignIn,
                   icon: const ImageIcon(
                     AssetImage("assets/image/google_icon.png"),
                     color: Colors.black,

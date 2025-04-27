@@ -1,15 +1,36 @@
 class Config {
-  static final supabaseURL = String.fromEnvironment("SUPABASE_URL");
-  static final supabaseAnonKey = String.fromEnvironment("SUPABASE_ANON_KEY");
-  static final googleServerClientID = String.fromEnvironment(
-    "GOOGLE_SERVER_CLIENT_ID",
+  static const supabaseURL = String.fromEnvironment(
+    "SUPABASE_URL",
+    defaultValue: "UNSET",
   );
-  static final apiUrl = String.fromEnvironment("API_URL");
 
-  static final hfToken = String.fromEnvironment("HUGGINGFACE_TOKEN");
+  static const supabaseAnonKey = String.fromEnvironment(
+    "SUPABASE_ANON_KEY",
+    defaultValue: "UNSET",
+  );
 
-  static final webSocketURL = String.fromEnvironment(
+  static const googleWebClientId = String.fromEnvironment(
+    "GOOGLE_WEB_CLIENT_ID",
+    defaultValue: "UNSET",
+  );
+
+  static const googleAndroidClientId = String.fromEnvironment(
+    "GOOGLE_ANDROID_CLIENT_ID",
+    defaultValue: "UNSET",
+  );
+
+  static const hfToken = String.fromEnvironment(
+    "HUGGINGFACE_TOKEN",
+    defaultValue: "UNSET",
+  );
+
+  static const apiUrl = String.fromEnvironment(
+    "API_URL",
+    defaultValue: "UNSET",
+  );
+
+  static const webSocketURL = String.fromEnvironment(
     "WEBSOCKETS_SERVER_URL",
-    defaultValue: "ws://10.0.2.2:8080/",
+    defaultValue: "ws://10.0.2.2:6060/",
   );
 }

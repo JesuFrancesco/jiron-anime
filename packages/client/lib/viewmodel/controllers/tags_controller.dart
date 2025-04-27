@@ -3,7 +3,7 @@ import 'package:jiron_anime/model/entity/models_library.dart';
 import 'package:jiron_anime/model/service/tags_service.dart';
 
 class TagController extends GetxController {
-  TagService service = TagService();
+  final service = TagService();
 
   final isLoading = false.obs;
   final tags = <Tag>[].obs;
