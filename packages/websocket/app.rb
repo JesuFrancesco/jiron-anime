@@ -5,7 +5,7 @@ require 'json'
 class WebSocketServer
     @connections = []
 
-    def self.start(port = 8080)
+    def self.start(port = 6060)
         EM.run do
             WebSocket::EventMachine::Server.start(host: '0.0.0.0', port: port) do |ws|
                 @connections << ws
