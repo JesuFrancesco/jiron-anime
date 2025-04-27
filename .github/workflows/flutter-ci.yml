@@ -49,14 +49,17 @@ jobs:
       - name: Crear .env
         run: |
           echo "AMBIENTE=${{ secrets.AMBIENTE }}" >> .env
+
           echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> .env
           echo "SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}" >> .env
+
           echo "API_URL=${{ secrets.API_URL }}" >> .env
           echo "WEBSOCKETS_SERVER_URL=${{ secrets.WEBSOCKETS_SERVER_URL }}" >> .env
           echo "HUGGINGFACE_TOKEN=${{ secrets.HUGGINGFACE_TOKEN }}" >> .env
+
           echo "GOOGLE_WEB_CLIENT_ID=${{ secrets.GOOGLE_WEB_CLIENT_ID }}" >> .env
           echo "GOOGLE_ANDROID_CLIENT_ID=${{ secrets.GOOGLE_ANDROID_CLIENT_ID }}" >> .env
-          echo "GOOGLE_SERVER_CLIENT_ID=${{ secrets.GOOGLE_SERVER_CLIENT_ID }}" >> .env
+
           echo "JAWG_MAPS_ACCESS_TOKEN=${{ secrets.JAWG_MAPS_ACCESS_TOKEN }}" >> .env
 
         #7 Buildear APK
