@@ -24,6 +24,9 @@ npm run express:generate
 2. Generar clases Dart con ORM (opcional)
 
 ```bash
+# 1. Descomentar dart generator en prisma/schema.prisma...
+
+# 2. Correr
 npm run dart:generate
 ```
 
