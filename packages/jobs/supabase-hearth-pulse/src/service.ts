@@ -11,8 +11,12 @@ export const keepAlive = async (
   tableName: string
 ): Promise<void> => {
   try {
-    await client.schema('keep-alive').from(tableName).delete().neq("id", 0);
-    await client.schema('keep-alive').from(tableName).insert({ name: crypto.randomUUID() });
+    await client.schema("keep-alive").from(tableName).delete().neq("id", 0);
+
+    await client
+      .schema("keep-alive")
+      .from(tableName)
+      .insert({ name: crypto.randomUUID() });
   } catch (error) {
     console.error("Error in keep-alive operation:", error);
     throw error;

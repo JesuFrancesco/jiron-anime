@@ -1,23 +1,21 @@
 {
-  "name": "supabase-hearth-pulse",
+  "name": "supabase-keep-alive",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "type": "module",
   "scripts": {
-    "tsc": "tsc",
-    "execute": "pnpx tsx ./src/index.ts"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "execute": "ts-node src/index.ts"
   },
   "keywords": [],
-  "author": "BennyTaccardi",
+  "author": "",
   "license": "ISC",
+  "packageManager": "pnpm@10.11.0",
   "devDependencies": {
-    "dotenv": "^16.4.7",
-    "typescript": "^5.6.3"
-  },
-  "dependencies": {
-    "@supabase/supabase-js": "^2.46.1",
+    "@supabase/supabase-js": "^2.49.8",
+    "@types/node": "^22.15.24",
+    "dotenv": "^16.5.0",
     "ts-node": "^10.9.2",
-    "tsx": "^4.19.2"
+    "typescript": "^5.8.3"
   }
 }

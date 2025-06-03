@@ -16,6 +16,14 @@ KeepAlive for Supabase is an open-source tool designed to prevent Supabase free-
     );
 ```
 
+```sql
+GRANT INSERT, SELECT, DELETE ON SCHEMA "keep-alive" TO anon;
+GRANT INSERT, SELECT, DELETE ON "keep-alive"."keep-alive" TO anon;
+```
+
+- Disable RLS in schema keep-alive
+- Enable Data API
+
 ## How to use it
 
 1. Clone the Repository
