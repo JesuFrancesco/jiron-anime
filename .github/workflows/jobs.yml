@@ -3,6 +3,8 @@ name: Supabase Keep Alive Job
 on:
   schedule:
     - cron: "0 17 * * *"
+  push:
+    branches: ["dev", "prod"]
 
 env:
   SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
