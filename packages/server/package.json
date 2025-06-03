@@ -6,8 +6,9 @@
   "scripts": {
     "dev": "nodemon ./src/index.ts",
     "express:generate": "npm run generator:build && npm run db:generate",
+    "dart:generate": "npx prisma generate --generator dart",
     "generator:build": "npm --prefix ./prisma/generator install && npm --prefix ./prisma/generator run build",
-    "db:generate": "npx prisma generate --generator client --generator express",
+    "db:generate": "npx prisma generate --generator express --generator client",
     "db:push": "npx prisma db push",
     "build": "npm run express:generate && npx prisma migrate deploy && npx tsc && echo 'build realizado correctamente' || echo 'algo salio mal'",
     "start": "node ./dist/index.js"

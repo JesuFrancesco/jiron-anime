@@ -21,10 +21,10 @@ npm i
 npm run express:generate
 ```
 
-3. Ejecutar migraciones de prisma
+2. Generar clases Dart con ORM (opcional)
 
 ```bash
-npm run db:migrate
+npm run dart:generate
 ```
 
 3. Correr el programa (desarrollo)
