@@ -56,56 +56,83 @@ API_ROUTER.use(addPrisma);
 const profileRouter = ProfileRouter({
   ...commonRouterConfig,
 });
-// profileRouter.use(authHandler);
 API_ROUTER.use(profileRouter);
 
 const clientRouter = ClientRouter({
   ...commonRouterConfig,
 });
-// clientRouter.use(authHandler);
 API_ROUTER.use(clientRouter);
 
 const wishlistRouter = WishlistRouter({
   ...commonRouterConfig,
 });
-// wishlistRouter.use(authHandler);
 API_ROUTER.use(wishlistRouter);
 
 const wishlistItemRouter = WishlistItemRouter({
   ...commonRouterConfig,
 });
-// wishlistItemRouter.use(authHandler);
 API_ROUTER.use(wishlistItemRouter);
 
 const shoppingCartRouter = ShoppingCartRouter({
   ...commonRouterConfig,
 });
-// shoppingCartRouter.use(authHandler);
 API_ROUTER.use(shoppingCartRouter);
 
 const cartItemRouter = CartItemRouter({
   ...commonRouterConfig,
 });
-// cartItemRouter.use(authHandler);
 API_ROUTER.use(cartItemRouter);
 
 API_ROUTER.use(orderRouter);
 
 // public router
-API_ROUTER.use(ProductRouter(commonRouterConfig));
-
-API_ROUTER.use(MarketRouter(commonRouterConfig));
-
-API_ROUTER.use(ProductRatingRouter(commonRouterConfig));
-
-API_ROUTER.use(ProductQuestionRouter(commonRouterConfig));
-
-API_ROUTER.use(TagRouter(commonRouterConfig));
-
-API_ROUTER.use(ProductTagRouter(commonRouterConfig));
-
-API_ROUTER.use(NotificationRouter(commonRouterConfig));
+API_ROUTER.use(
+  ProductRouter(commonRouterConfig),
+  MarketRouter(commonRouterConfig),
+  ProductRatingRouter(commonRouterConfig),
+  ProductQuestionRouter(commonRouterConfig),
+  TagRouter(commonRouterConfig),
+  ProductTagRouter(commonRouterConfig),
+  NotificationRouter(commonRouterConfig)
+);
 
 API_ROUTER.use("/storage", storageRouter);
+
+function getPathFromRegexp(regexp: RegExp): string {
+  const str = regexp
+    .toString()
+    .replace(/^\/\^/, "")
+    .replace(/\?\(\?=\\\/\|\$\)\/i$/, "")
+    .replace(/\\\//g, "/")
+    .replace(/\\\./g, ".")
+    .replace(/\$$/, "");
+  return str.startsWith("/") ? str : `/${str}`;
+}
+
+export function listAllRoutesFlat(): string[] {
+  const queue: { base: string; stack: any[] }[] = [
+    { base: "/api/v1", stack: API_ROUTER.stack },
+  ];
+  const routes: string[] = [];
+
+  while (queue.length > 0) {
+    const { base, stack } = queue.shift()!;
+
+    for (const layer of stack) {
+      if (layer.route?.path) {
+        const methods = Object.keys(layer.route.methods)
+          .filter((m) => layer.route.methods[m])
+          .map((m) => m.toUpperCase())
+          .join(", ");
+        routes.push(`${methods} ${base}${layer.route.path}`);
+      } else if (layer.name === "router" && layer.handle?.stack) {
+        const path = getPathFromRegexp(layer.regexp);
+        queue.push({ base: base + path, stack: layer.handle.stack });
+      }
+    }
+  }
+
+  return routes;
+}
 
 export { API_ROUTER };

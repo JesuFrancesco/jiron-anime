@@ -17,7 +17,7 @@ import {
  * @param next siguiente handler
  */
 const logErrores: ErrorRequestHandler = (err: Error, req, res, next) => {
-  logger.error(err);
+  logger.warn(err);
   next(err);
 };
 

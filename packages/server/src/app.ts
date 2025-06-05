@@ -26,6 +26,9 @@ export const sb = createClient(config.supabaseURL, config.supabaseAnonKey);
 const app = express();
 
 // == Swagger definition
+app.get("/", (req, res) => {
+  res.redirect("/docs");
+});
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(specs));
 
 // == Logger | peticion
