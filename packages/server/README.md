@@ -23,6 +23,8 @@ npm run express:generate
 
 2. Generar clases Dart con ORM (opcional)
 
+Nota. Hay problemas con el parseo de doubles, revisar los modelos generados en [la ruta de generación](../client/lib/model/entity/)
+
 ```bash
 # 1. Descomentar dart generator en prisma/schema.prisma...
 

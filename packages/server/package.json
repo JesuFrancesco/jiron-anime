@@ -1,14 +1,11 @@
 {
   "name": "ja_server",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
   "scripts": {
     "dev": "nodemon ./src/index.ts",
-    "express:generate": "npm run generator:build && npm run db:generate",
-    "dart:generate": "npx prisma generate --generator dart",
     "generator:build": "npm --prefix ./prisma/generator install && npm --prefix ./prisma/generator run build",
-    "db:generate": "npx prisma generate --generator express --generator client",
+    "express:generate": "npm run generator:build && npx prisma generate --generator client --generator express",
+    "dart:generate": "npx prisma generate --generator dart",
     "db:push": "npx prisma db push",
     "build": "npm run express:generate && npx prisma migrate deploy && npx tsc && echo 'build realizado correctamente' || echo 'algo salio mal'",
     "start": "node ./dist/index.js"
@@ -16,9 +13,6 @@
   "prisma": {
     "seed": "ts-node ./prisma/seed.ts"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "devDependencies": {
     "@abcx3/prisma-generator-dart": "^1.4.0",
     "@hapi/boom": "^10.0.1",
@@ -39,7 +33,7 @@
     "joi": "^17.13.3",
     "lodash": "^4.17.21",
     "log4js": "^6.9.1",
-    "multer": "^1.4.5-lts.1",
+    "multer": "^2.0.1",
     "nodemon": "^3.1.4",
     "pg": "^8.13.0",
     "prisma": "^5.21.1",
