@@ -5,3 +5,4 @@ generated
 blob/data
 server/src/generated
 errors.log
+logs.txt
