@@ -52,7 +52,7 @@ docker cp backup/db_cluster-16-12-2024@14-20-34.backup janime_pg:/dump.backup
 # 3. correr backup
 docker exec -u postgres janime_pg psql -d postgres -f /dump.backup
 
-# 4. Cambiar env de prisma por el de desarrollo
+# 4. Cambiar env de db por la local (.env)
 
 # Local
 DATABASE_URL="postgresql://postgres:mypassword@localhost:5432/postgres?pgbouncer=true"
