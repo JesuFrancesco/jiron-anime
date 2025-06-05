@@ -6,3 +6,4 @@ blob/data
 server/src/generated
 errors.log
 logs.txt
+pgdata_janime

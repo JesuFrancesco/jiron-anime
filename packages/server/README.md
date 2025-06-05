@@ -42,11 +42,9 @@ npm run dev
 
 ## Ejecutar postgres local
 
-1.
-
 ```sh
 # 1. crear docker
-docker run --name janime_pg -e POSTGRES_PASSWORD=mypassword -p 5432:5432 -p 6543:6543 -d postgres:latest
+docker run --name janime_pg -e POSTGRES_PASSWORD=mypassword -p 5432:5432 -p 6543:6543 -v pgdata_janime:/var/lib/postgresql/data -d postgres:latest
 
 # 2. copiar backup
 docker cp backup/db_cluster-16-12-2024@14-20-34.backup janime_pg:/dump.backup
