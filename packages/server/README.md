@@ -46,7 +46,7 @@ npm run dev
 
 ```sh
 # 1. crear docker
-docker run --name janime_pg -e POSTGRES_PASSWORD=mypassword -d postgres:latest
+docker run --name janime_pg -e POSTGRES_PASSWORD=mypassword -p 5432:5432 -p 6543:6543 -d postgres:latest
 
 # 2. copiar backup
 docker cp backup/db_cluster-16-12-2024@14-20-34.backup janime_pg:/dump.backup
@@ -57,6 +57,6 @@ docker exec -u postgres janime_pg psql -d postgres -f /dump.backup
 # 4. Cambiar env de prisma por el de desarrollo
 
 # Local
-DATABASE_URL="postgresql://postgres:mypassword@localhost:6543/postgres?pgbouncer=true"
+DATABASE_URL="postgresql://postgres:mypassword@localhost:5432/postgres?pgbouncer=true"
 DIRECT_URL="postgresql://postgres:mypassword@localhost:5432/postgres"
 ```
