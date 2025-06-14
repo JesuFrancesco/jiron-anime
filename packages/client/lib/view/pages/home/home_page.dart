@@ -6,6 +6,7 @@ import 'package:jiron_anime/view/pages/home/notifications/notifications_page.dar
 import 'package:jiron_anime/view/pages/home/search/busqueda_page.dart';
 import 'package:jiron_anime/view/pages/home/perfil/perfil_page.dart';
 import 'package:jiron_anime/view/pages/home/store/tienda_page.dart';
+import 'package:jiron_anime/view/pages/forum/forum_page.dart';
 import 'package:jiron_anime/view/theme/colors.dart';
 
 class HomePage extends StatefulWidget {
@@ -15,7 +16,7 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-enum StoreWidgetType { tienda, buscar, notificaciones, perfil }
+enum StoreWidgetType { tienda, buscar, notificaciones, perfil ,foro}
 
 class _HomePageState extends State<HomePage> {
   final productoController = Get.put(ProductoController());
@@ -41,6 +42,9 @@ class _HomePageState extends State<HomePage> {
         return const NotificationsPage();
       case StoreWidgetType.perfil:
         return const PerfilPage();
+      case StoreWidgetType.foro:
+        return const ForumPage();
+      
     }
   }
 
@@ -72,6 +76,7 @@ class _HomePageState extends State<HomePage> {
             label: "Notificaciones",
           ),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: "Perfil"),
+          BottomNavigationBarItem(icon: Icon(Icons.forum), label: "Foros"),
         ],
         currentIndex: _selectedWidget.index,
         onTap: _onItemTapped,

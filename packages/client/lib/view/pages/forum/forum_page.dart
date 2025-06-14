@@ -1,87 +1,169 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:jiron_anime/config/config.dart';
-import 'package:jiron_anime/model/entity/local_message.dart';
-import 'package:jiron_anime/view/components/custom_appbar.dart';
+import 'package:get/get.dart';
 import 'package:jiron_anime/view/components/custom_layout.dart';
+import 'package:jiron_anime/view/components/auth_controller.dart';
 import 'package:jiron_anime/utils/sizedbox_entension.dart';
-import 'package:web_socket_channel/web_socket_channel.dart';
-import 'package:intl/intl.dart';
+import 'forum_detail_page.dart';
 
-class ForumPage extends StatefulWidget {
-  const ForumPage({super.key});
+class ForumPost {
+  final String username;
+  final String avatarUrl;
+  final String question;
+  final int likes;
+  final int comments;
+  final int shares;
+  final String imageUrl;
 
-  @override
-  State<ForumPage> createState() => _ForumPageState();
+  ForumPost({
+    required this.username,
+    required this.avatarUrl,
+    required this.question,
+    required this.likes,
+    required this.comments,
+    required this.shares,
+    required this.imageUrl,
+  });
 }
 
-class _ForumPageState extends State<ForumPage> {
-  final TextEditingController _controller = TextEditingController();
-  final _channel = WebSocketChannel.connect(Uri.parse(Config.webSocketURL));
+final List<ForumPost> forumPosts = [
+  ForumPost(
+    username: 'user24',
+    avatarUrl: 'https://i.imgur.com/Bn2COnj.png',
+    question: 'Opiniones sobre el final de SNK ?????',
+    likes: 20,
+    comments: 20,
+    shares: 5,
+    imageUrl: 'https://i.imgur.com/83e4F9v.jpeg',
+  ),
+  ForumPost(
+    username: 'user25',
+    avatarUrl: 'https://i.imgur.com/HtBvqWx.png',
+    question: 'Para ustedes Bakugo es un personaje tridimensional?',
+    likes: 20,
+    comments: 20,
+    shares: 5,
+    imageUrl: 'https://i.imgur.com/83e4F9v.jpeg',
+  ),
+];
 
-  final List<LocalMessage> _messages = [];
-
-  bool conectado = false;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _channel.stream.listen((message) {
-      setState(() {
-        conectado = true;
-        final jsonMessage = jsonDecode(message);
-        final newMessage = LocalMessage.fromJson(jsonMessage);
-        _messages.add(newMessage);
-      });
-    }, onError: (payload) => setState(() => conectado = false));
-  }
+class ForumPage extends StatelessWidget {
+  const ForumPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.transparent,
       body: CustomLayout(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const CustomAppbar(title: "Foro"),
-            32.pv,
-            Text(
-              'Estado del servidor: ${conectado ? "Conectado" : "Desconectado"}',
-              style: Theme.of(context).textTheme.titleMedium!,
+            // AppBar personalizada
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const BackButton(color: Colors.black),
+                const Text(
+                  'Foros',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                  ),
+                ),
+                AuthController.getClipOvalAvatar(),
+              ],
             ),
+            12.pv,
+            // Banner canal
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 8),
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                image: const DecorationImage(
+                  image: NetworkImage('https://i.imgur.com/Cj7hHqT.jpeg'),
+                  fit: BoxFit.cover,
+                ),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Text(
+                '#general\nHabla de cosas de la comunidad ULIMA',
+                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 12),
+              child: Text(
+                'Posts de #general',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              ),
+            ),
+            // Lista de posts
             Expanded(
               child: ListView.builder(
-                itemCount: _messages.length,
+                itemCount: forumPosts.length,
                 itemBuilder: (context, index) {
-                  final message = _messages[index];
-                  return ListTile(
-                    title: Text(message.message),
-                    subtitle: Text(
-                      '${message.sender} - ${DateFormat('dd/MM/yyyy HH:mm').format(message.createdAt)}',
+                  final post = forumPosts[index];
+                  return GestureDetector(
+                    onTap: () {
+                      Get.to(() => ForumDetailPage(post: post));
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [Color(0xFFFFD6A5), Color(0xFFFFC3A0)],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        border: Border.all(color: Colors.black),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    CircleAvatar(
+                                      backgroundImage: NetworkImage(post.avatarUrl),
+                                      radius: 14,
+                                    ),
+                                    8.ph,
+                                    Text(post.username, style: const TextStyle(fontWeight: FontWeight.bold)),
+                                  ],
+                                ),
+                                6.pv,
+                                Text(post.question, style: const TextStyle(color: Colors.purple, fontWeight: FontWeight.w600)),
+                                12.pv,
+                                Row(
+                                  children: [
+                                    _iconText(Icons.thumb_up_alt_outlined, post.likes.toString()),
+                                    8.ph,
+                                    _iconText(Icons.comment_outlined, post.comments.toString()),
+                                    8.ph,
+                                    _iconText(Icons.share_outlined, post.shares.toString()),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: Image.network(
+                              post.imageUrl,
+                              width: 80,
+                              height: 80,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   );
                 },
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: _controller,
-                      decoration: const InputDecoration(
-                        labelText: 'Enviar mensaje',
-                      ),
-                    ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.send),
-                    onPressed: _sendMessage,
-                  ),
-                ],
               ),
             ),
           ],
@@ -90,26 +172,13 @@ class _ForumPageState extends State<ForumPage> {
     );
   }
 
-  void _sendMessage() {
-    if (_controller.text.isNotEmpty) {
-      _channel.sink.add(_controller.text);
-      setState(() {
-        _messages.add(
-          LocalMessage(
-            sender: "Yo",
-            message: _controller.text,
-            createdAt: DateTime.now(),
-          ),
-        );
-      });
-      _controller.clear();
-    }
-  }
-
-  @override
-  void dispose() {
-    _channel.sink.close();
-    _controller.dispose();
-    super.dispose();
+  Widget _iconText(IconData icon, String text) {
+    return Row(
+      children: [
+        Icon(icon, size: 16),
+        const SizedBox(width: 4),
+        Text(text),
+      ],
+    );
   }
 }
