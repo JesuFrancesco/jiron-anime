@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:jiron_anime/view/pages/events/events_page.dart';
 import 'package:jiron_anime/viewmodel/controllers/notifications_controller.dart';
 import 'package:jiron_anime/viewmodel/controllers/productos_controller.dart';
 import 'package:jiron_anime/view/pages/home/notifications/notifications_page.dart';
@@ -16,7 +17,7 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-enum StoreWidgetType { tienda, buscar, notificaciones, perfil ,foro}
+enum StoreWidgetType { tienda, buscar, notificaciones, perfil, foro, eventos }
 
 class _HomePageState extends State<HomePage> {
   final productoController = Get.put(ProductoController());
@@ -44,7 +45,8 @@ class _HomePageState extends State<HomePage> {
         return const PerfilPage();
       case StoreWidgetType.foro:
         return const ForumPage();
-      
+      case StoreWidgetType.eventos:
+        return const EventsPage();
     }
   }
 
@@ -77,6 +79,7 @@ class _HomePageState extends State<HomePage> {
           ),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: "Perfil"),
           BottomNavigationBarItem(icon: Icon(Icons.forum), label: "Foros"),
+          BottomNavigationBarItem(icon: Icon(Icons.event), label: "Eventos"),
         ],
         currentIndex: _selectedWidget.index,
         onTap: _onItemTapped,
