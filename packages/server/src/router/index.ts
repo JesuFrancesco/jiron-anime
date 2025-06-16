@@ -33,6 +33,8 @@ import { WishlistRouter } from "../generated/express/Wishlist";
 import { WishlistItemRouter } from "../generated/express/WishlistItem";
 import { TagRouter } from "../generated/express/Tag";
 import { ProductTagRouter } from "../generated/express/ProductTag";
+import { EventTypeRouter } from "../generated/express/EventType";
+import { EventRouter } from "../generated/express/Event";
 
 const API_ROUTER = Router();
 
@@ -82,6 +84,16 @@ const cartItemRouter = CartItemRouter({
   ...commonRouterConfig,
 });
 API_ROUTER.use(cartItemRouter);
+
+const eventTypesRouter = EventTypeRouter({
+  ...commonRouterConfig,
+});
+API_ROUTER.use(eventTypesRouter);
+
+const eventsRouter = EventRouter({
+  ...commonRouterConfig,
+});
+API_ROUTER.use(eventsRouter);
 
 API_ROUTER.use(orderRouter);
 
