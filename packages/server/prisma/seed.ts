@@ -168,6 +168,7 @@ async function main() {
   // static
   await seedFromSQL("prisma/seeders/paises.sql");
   await seedFromSQL("prisma/seeders/ubigeos.sql");
+  await seedFromSQL("prisma/seeders/event_types.sql");
 
   // mock
   await seedFromSQL("prisma/seeders/mock/cuentas.sql"); // working

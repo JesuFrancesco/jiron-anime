@@ -34,7 +34,9 @@ model Profile {
   client  Client?
   markets Market[]
 
-  messages Message[]
+  messages       Message[]
+  events         Event[]
+  eventAttendees EventAttendee[]
 
   @@map("profiles")
 }
@@ -426,4 +428,74 @@ model RatingAttachment {
 
   @@id([ratingId, imageUrl])
   @@map("rating_attachments")
+}
+
+model Event {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @default(now()) @map("updated_at")
+
+  // Información básica
+  title        String
+  description  String
+  duration     Int      // En minutos
+  capacity     Int      // Capacidad máxima de asistentes
+  eventTypeId  Int       @map("event_type_id")
+  eventType    EventType @relation(fields: [eventTypeId], references: [id])
+  date         String   // Formato: "2025-05-15"
+  time         String   // Formato: "10:00 AM"
+  
+  // Modalidad y ubicación
+  isVirtual    Boolean @default(false) @map("is_virtual")
+  isOnCampus   Boolean @default(true) @map("is_on_campus")
+  edificio     String? // Solo si isOnCampus = true
+  salon        String? // Opcional, solo si isOnCampus = true y el usuario lo llene
+  location     String? // Para eventos fuera del campus
+  link         String? // Solo si isVirtual = true
+
+  // Precio
+  isFree       Boolean @default(false) @map("is_free")
+  price        Float? // Solo si isFree = false
+
+  // Contenido multimedia
+  mainImageUrl String @map("main_image_url")
+  // additionalImages String[] // Array de URLs de imágenes
+
+  // Actividades del evento
+  activities   String[]
+
+  // Organizador del Evento
+  profileId    String  @map("profile_id") @db.Uuid
+  profile      Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  // Personas registrados
+  attendees    EventAttendee[]
+
+  @@map("events")
+}
+
+model EventAttendee {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  // Relaciones
+  eventId   Int   @map("event_id")
+  event     Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  profileId String  @map("profile_id") @db.Uuid
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  // Evitar registros duplicados
+  @@unique([eventId, profileId])
+  @@map("event_attendees")
+}
+
+// Modelo para tipos de eventos
+model EventType {
+  id      Int     @id @default(autoincrement())
+  name    String  @unique
+  active  Boolean @default(true)
+  Event   Event[]
+
+  @@map("event_types")
 }
