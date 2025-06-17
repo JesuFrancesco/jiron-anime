@@ -33,7 +33,7 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
     @override
     void initState() {
       super.initState();
-      staticComments  = [...widget.post.initialComments];
+      staticComments = [...widget.post.comments];
     }
 
   final TextEditingController _commentController = TextEditingController();
@@ -41,13 +41,14 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
   void _addComment() {
   if (_commentController.text.trim().isEmpty) return;
   setState(() {
-    staticComments.add(ForumComment(
-      username: AuthController.fullName ?? 'Anonimo',
-      avatarUrl: users.last.avatarUrl, // usuario anónimo
-      content: _commentController.text.trim(),
-    ));
-  });
-  _commentController.clear();
+  final newComment = ForumComment(
+    username: AuthController.fullName ?? 'Anónimo',
+    avatarUrl: users.last.avatarUrl,
+    content: _commentController.text.trim(),
+  );
+  staticComments.add(newComment);
+  widget.post.comments.add(newComment); // <-- importante para reflejar fuera
+});
 }
 
   @override
@@ -110,7 +111,7 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
                             children: [
                               _iconText(Icons.thumb_up, post.likes.toString()),
                               8.ph,
-                              _iconText(Icons.comment, post.comments.toString()),
+                              _iconText(Icons.comment, post.comments.length.toString()),
                               8.ph,
                               _iconText(Icons.share, post.shares.toString()),
                             ],
