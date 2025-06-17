@@ -155,6 +155,7 @@ class CreateEditEventController extends GetxController {
     }
 
     final newEvent = Event(
+      id: initialEvent?.id,
       title: title.value,
       description: description.value,
       date: date.value,
@@ -193,8 +194,7 @@ class CreateEditEventController extends GetxController {
     // Verifica si es una edición o creación de evento
     if (initialEvent != null) {
       print('Actualizando evento: ${newEvent.toJson()}');
-      return;
-      // await _eventService.updateEvent(newEvent);
+      await _eventService.updateEvent(newEvent);
     } else {
       await _eventService.createNewEvent(newEvent);
     }

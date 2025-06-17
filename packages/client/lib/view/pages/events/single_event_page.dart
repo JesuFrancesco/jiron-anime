@@ -17,6 +17,7 @@ class SingleEventPage extends StatelessWidget {
     final theme = Get.theme;
     final colors = theme.colorScheme;
     final SingleEventController c = Get.put(SingleEventController(eventId));
+    bool wasEdited = false;
 
     return Obx(() {
       if (c.isLoading.value) {
@@ -51,6 +52,18 @@ class SingleEventPage extends StatelessWidget {
             ),
             backgroundColor: Colors.transparent,
             elevation: 0,
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () {
+                if (wasEdited) {
+                  Navigator.of(context).pop(true);
+
+                  return;
+                }
+
+                Navigator.of(context).pop();
+              },
+            ),
           ),
           body: DefaultTabController(
             length: 3,
@@ -175,8 +188,12 @@ class SingleEventPage extends StatelessWidget {
                                     transition: Transition.cupertino,
                                     duration: const Duration(milliseconds: 300),
                                   );
+
                                   if (result == true) {
                                     await c.fetchEvent();
+
+                                    wasEdited = true;
+
                                     Get.snackbar(
                                       'Evento actualizado',
                                       'Los datos del evento se actualizaron correctamente',
