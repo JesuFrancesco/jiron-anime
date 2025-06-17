@@ -4,7 +4,7 @@ import 'package:jiron_anime/model/entity/events/event.dart';
 import 'package:jiron_anime/utils/event_format_utils.dart';
 import 'package:jiron_anime/utils/sizedbox_entension.dart';
 import 'package:jiron_anime/view/components/custom_layout.dart';
-import 'package:jiron_anime/view/pages/events/create_event_page.dart';
+import 'package:jiron_anime/view/pages/events/create_edit_event_page.dart';
 import 'package:jiron_anime/view/pages/events/single_event_page.dart';
 import 'package:jiron_anime/viewmodel/controllers/events/events_controller.dart';
 
@@ -56,15 +56,14 @@ class _EventsPageState extends State<EventsPage> {
                   Row(
                     spacing: 8,
                     children: [
+                      // TODO: Pasarlo como FAB
                       IconButton.filled(
                         color: colors.onPrimary,
-                        style: ButtonStyle(
-                          iconSize: WidgetStatePropertyAll(28),
-                        ),
+                        style: IconButton.styleFrom(iconSize: 28),
                         icon: const Icon(Icons.add),
                         onPressed: () async {
                           final result = await Get.to(
-                            () => CreateEventPage(),
+                            () => CreateEditEventPage(isEdit: false),
                             transition: Transition.cupertino,
                             duration: const Duration(milliseconds: 300),
                           );
@@ -78,9 +77,7 @@ class _EventsPageState extends State<EventsPage> {
                       IconButton.filled(
                         color: colors.onPrimary,
                         icon: const Icon(Icons.filter_list_rounded),
-                        style: ButtonStyle(
-                          iconSize: WidgetStatePropertyAll(28),
-                        ),
+                        style: IconButton.styleFrom(iconSize: 28),
                         onPressed: () {
                           Get.closeAllSnackbars();
 
