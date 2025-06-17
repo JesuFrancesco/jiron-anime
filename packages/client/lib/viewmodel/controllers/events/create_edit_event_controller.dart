@@ -8,7 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:jiron_anime/model/service/event_service.dart';
 
-class CreateEventController extends GetxController {
+class CreateEditEventController extends GetxController {
   final formKey = GlobalKey<FormState>();
   final mainImage = Rx<File?>(null);
   final picker = ImagePicker();
@@ -41,16 +41,27 @@ class CreateEventController extends GetxController {
   final isLoadingEventTypes = true.obs;
   final eventTypesError = RxnString();
 
-  @override
-  void onClose() {
-    activityInputController.dispose();
-    super.onClose();
-  }
+  final Event? initialEvent;
+
+  // Observable para controlar la visibilidad de la imagen inicial
+  final RxBool showInitialImage = true.obs;
+
+  CreateEditEventController({this.initialEvent});
 
   @override
   void onInit() {
     super.onInit();
     _loadEventTypes();
+
+    if (initialEvent != null) {
+      populateFromEvent(initialEvent!);
+    }
+  }
+
+  @override
+  void onClose() {
+    activityInputController.dispose();
+    super.onClose();
   }
 
   Future<void> _loadEventTypes() async {
@@ -85,12 +96,45 @@ class CreateEventController extends GetxController {
     activities.removeAt(index);
   }
 
-  void submitForm(BuildContext context) async {
+  void populateFromEvent(Event event) {
+    title.value = event.title ?? '';
+    description.value = event.description ?? '';
+    date.value = event.date ?? '';
+    time.value = event.time ?? '';
+    duration.value = event.duration ?? 0;
+    capacity.value = event.capacity ?? 0;
+    eventTypeId.value = event.eventTypeId;
+    eventTypeName.value = event.eventType?.name;
+    building.value = event.edificio ?? '';
+    room.value = event.salon ?? '';
+    price.value = event.price?.toString() ?? '';
+    accessLink.value = event.link ?? '';
+    externalLocation.value = event.location ?? '';
+    activities.assignAll((event.activities ?? []).map((act) => [act]));
+    modality.value = event.isVirtual == true ? 'Virtual' : 'Presencial';
+    location.value =
+        event.isOnCampus == true
+            ? 'Dentro de la Universidad'
+            : 'Fuera de la Universidad';
+    isFree.value = event.isFree ?? false;
+    mainImage.value = null;
+  }
+
+  void deleteImage() {
+    mainImage.value = null;
+    if (initialEvent != null && initialEvent!.mainImageUrl != null) {
+      showInitialImage.value = false;
+      // TODO: Implementar lógica para borrar la imagen del storage de Supabase
+    }
+  }
+
+  Future<void> submitForm(BuildContext context) async {
     if (!formKey.currentState!.validate()) {
       return;
     }
 
-    if (mainImage.value == null) {
+    if (mainImage.value == null &&
+        (initialEvent == null || initialEvent?.mainImageUrl == null)) {
       Get.closeAllSnackbars();
       Get.snackbar(
         'Imagen requerida',
@@ -103,12 +147,12 @@ class CreateEventController extends GetxController {
       return;
     }
 
-    // Prceso de subir archivo y obtener URL
-    final uploadService = FileUploadService(context);
-
-    final uploadFile = await uploadService.uploadSingleFile(mainImage.value!);
-
-    final newImageUrl = uploadFile?.publicUrl;
+    String? newImageUrl = initialEvent?.mainImageUrl;
+    if (mainImage.value != null) {
+      final uploadService = FileUploadService(context);
+      final uploadFile = await uploadService.uploadSingleFile(mainImage.value!);
+      newImageUrl = uploadFile?.publicUrl;
+    }
 
     final newEvent = Event(
       title: title.value,
@@ -146,11 +190,21 @@ class CreateEventController extends GetxController {
       price: isFree.value ? null : double.tryParse(price.value),
     );
 
-    await _eventService.createNewEvent(newEvent);
+    // Verifica si es una edición o creación de evento
+    if (initialEvent != null) {
+      print('Actualizando evento: ${newEvent.toJson()}');
+      return;
+      // await _eventService.updateEvent(newEvent);
+    } else {
+      await _eventService.createNewEvent(newEvent);
+    }
+
     Get.closeAllSnackbars();
     Get.snackbar(
       'Éxito',
-      'Evento creado exitosamente',
+      initialEvent == null
+          ? 'Evento creado exitosamente'
+          : 'Evento editado exitosamente',
       snackPosition: SnackPosition.BOTTOM,
       backgroundColor: Colors.green.withValues(alpha: 0.8),
       colorText: Colors.white,
@@ -160,7 +214,5 @@ class CreateEventController extends GetxController {
     if (context.mounted) {
       Navigator.of(context).pop(true);
     }
-
-    // Get.back(result: true);
   }
 }

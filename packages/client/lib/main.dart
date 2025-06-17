@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:jiron_anime/view/pages/events/create_edit_event_page.dart';
+import 'package:jiron_anime/view/pages/events/events_page.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:jiron_anime/utils/supabase_utils.dart';
@@ -85,6 +87,21 @@ class MainApp extends StatelessWidget {
         GetPage(
           name: "/create-market",
           page: () => const CreateMarketPage(),
+          middlewares: [AuthMiddleware()],
+        ),
+        GetPage(
+          name: '/events',
+          page: () => const EventsPage(),
+          middlewares: [AuthMiddleware()],
+        ),
+        GetPage(
+          name: '/create-event',
+          page: () => CreateEditEventPage(isEdit: false),
+          middlewares: [AuthMiddleware()],
+        ),
+        GetPage(
+          name: '/edit-event',
+          page: () => CreateEditEventPage(isEdit: true),
           middlewares: [AuthMiddleware()],
         ),
       ],

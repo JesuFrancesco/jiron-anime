@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:jiron_anime/utils/event_format_utils.dart';
 import 'package:jiron_anime/utils/sizedbox_entension.dart';
+import 'package:jiron_anime/view/pages/events/create_edit_event_page.dart';
 import 'package:jiron_anime/view/theme/colors.dart';
 import 'package:jiron_anime/model/service/auth_service.dart';
-import 'package:jiron_anime/view/pages/events/edit_event_page.dart';
 import 'package:jiron_anime/viewmodel/controllers/events/single_event_controller.dart';
 
 class SingleEventPage extends StatelessWidget {
@@ -168,7 +168,10 @@ class SingleEventPage extends StatelessWidget {
                               child: FilledButton.icon(
                                 onPressed: () async {
                                   final result = await Get.to(
-                                    () => EditEventPage(initialEvent: event),
+                                    () => CreateEditEventPage(
+                                      event: event,
+                                      isEdit: true,
+                                    ),
                                     transition: Transition.cupertino,
                                     duration: const Duration(milliseconds: 300),
                                   );
