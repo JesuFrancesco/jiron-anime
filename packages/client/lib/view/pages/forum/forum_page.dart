@@ -4,6 +4,9 @@ import 'package:jiron_anime/view/components/custom_layout.dart';
 import 'package:jiron_anime/view/components/auth_controller.dart';
 import 'package:jiron_anime/utils/sizedbox_entension.dart';
 import 'forum_detail_page.dart';
+import 'package:jiron_anime/view/pages/forum/forum_users.dart';
+
+
 
 class ForumPost {
   final String username;
@@ -13,6 +16,7 @@ class ForumPost {
   final int comments;
   final int shares;
   final String imageUrl;
+  final List<ForumComment> initialComments;
 
   ForumPost({
     required this.username,
@@ -22,27 +26,47 @@ class ForumPost {
     required this.comments,
     required this.shares,
     required this.imageUrl,
+    required this.initialComments,
   });
 }
 
 final List<ForumPost> forumPosts = [
   ForumPost(
-    username: 'user24',
-    avatarUrl: 'https://i.imgur.com/Bn2COnj.png',
+    username: users[0].name,
+    avatarUrl: users[0].avatarUrl,
     question: 'Opiniones sobre el final de SNK ?????',
     likes: 20,
     comments: 20,
     shares: 5,
     imageUrl: 'https://i.imgur.com/83e4F9v.jpeg',
+    initialComments: [
+      ForumComment(
+        username: users[0].name,
+        avatarUrl: users[0].avatarUrl,
+        content: 'Me hizo llorar la escena final...',
+      ),
+      ForumComment(
+        username: users[1].name,
+        avatarUrl: users[1].avatarUrl,
+        content: 'No entendí del todo el mensaje...',
+      ),
+    ],
   ),
   ForumPost(
-    username: 'user25',
-    avatarUrl: 'https://i.imgur.com/HtBvqWx.png',
+    username: users[1].name,
+    avatarUrl: users[1].avatarUrl,
     question: 'Para ustedes Bakugo es un personaje tridimensional?',
-    likes: 20,
-    comments: 20,
-    shares: 5,
-    imageUrl: 'https://i.imgur.com/83e4F9v.jpeg',
+    likes: 15,
+    comments: 10,
+    shares: 2,
+    imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQUTl1o7k2r8-PpM43M-r_dd4F0vkCStwER2Ho2mgeK6R1zETXysErDtUuOB8w63tBMlSPbos897ICjtH3nwSVV-9Grg7vJjmtZ9G3A1KY',
+    initialComments: [
+      ForumComment(
+        username: users[0].name,
+        avatarUrl: users[0].avatarUrl,
+        content: 'Sí, tiene una evolución brutal.',
+      ),
+    ],
   ),
 ];
 
@@ -60,7 +84,7 @@ class ForumPage extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const BackButton(color: Colors.black),
+                
                 const Text(
                   'Foros',
                   style: TextStyle(

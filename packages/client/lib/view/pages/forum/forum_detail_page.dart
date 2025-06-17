@@ -4,6 +4,8 @@ import 'package:jiron_anime/view/components/auth_controller.dart';
 import 'package:jiron_anime/utils/sizedbox_entension.dart';
 import 'package:get/get.dart';
 import 'package:jiron_anime/view/pages/forum/forum_page.dart'; // para ForumPost
+import 'package:jiron_anime/view/pages/forum/forum_users.dart';
+
 
 class ForumComment {
   final String username;
@@ -26,25 +28,27 @@ class ForumDetailPage extends StatefulWidget {
 }
 
 class _ForumDetailPageState extends State<ForumDetailPage> {
-  final List<ForumComment> _comments = [
-    ForumComment(username: 'user24', avatarUrl: 'https://i.imgur.com/Bn2COnj.png',
-                 content: 'es 2d Lorem Ipsum...'),
-    ForumComment(username: 'user25', avatarUrl: 'https://i.imgur.com/HtBvqWx.png',
-                 content: 'ok Lorem Ipsum...'),
-  ];
+  late List<ForumComment> staticComments ;
+
+    @override
+    void initState() {
+      super.initState();
+      staticComments  = [...widget.post.initialComments];
+    }
+
   final TextEditingController _commentController = TextEditingController();
 
   void _addComment() {
-    if (_commentController.text.trim().isEmpty) return;
-    setState(() {
-      _comments.add(ForumComment(
-        username: 'user25',
-        avatarUrl: 'https://i.imgur.com/HtBvqWx.png',
-        content: _commentController.text.trim(),
-      ));
-    });
-    _commentController.clear();
-  }
+  if (_commentController.text.trim().isEmpty) return;
+  setState(() {
+    staticComments.add(ForumComment(
+      username: AuthController.fullName ?? 'Anonimo',
+      avatarUrl: users.last.avatarUrl, // usuario anónimo
+      content: _commentController.text.trim(),
+    ));
+  });
+  _commentController.clear();
+}
 
   @override
   Widget build(BuildContext context) {
@@ -130,9 +134,9 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
                     ListView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
-                      itemCount: _comments.length,
+                      itemCount: staticComments.length,
                       itemBuilder: (context, i) {
-                        final c = _comments[i];
+                        final c = staticComments[i];
                         return ListTile(
                           leading: CircleAvatar(backgroundImage: NetworkImage(c.avatarUrl)),
                           title: Text(c.username, style: const TextStyle(fontWeight: FontWeight.bold)),
