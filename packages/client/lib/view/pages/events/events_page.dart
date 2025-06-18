@@ -38,14 +38,13 @@ class _EventsPageState extends State<EventsPage> {
                   Row(
                     spacing: 8,
                     children: [
-                      // TODO: Pasarlo como FAB
                       IconButton.filled(
                         color: colors.onPrimary,
                         style: IconButton.styleFrom(iconSize: 28),
                         icon: const Icon(Icons.add),
                         onPressed: () async {
                           final result = await Get.to(
-                            () => CreateEditEventPage(isEdit: false),
+                            () => const CreateEditEventPage(isEdit: false),
                             transition: Transition.cupertino,
                             duration: const Duration(milliseconds: 300),
                           );
@@ -76,7 +75,7 @@ class _EventsPageState extends State<EventsPage> {
                 ],
               ),
 
-              18.pv,
+              const SizedBox(height: 18),
 
               Container(
                 decoration: BoxDecoration(
@@ -92,7 +91,7 @@ class _EventsPageState extends State<EventsPage> {
                 ),
               ),
 
-              18.pv,
+              const SizedBox(height: 18),
 
               Expanded(
                 child: Obx(

@@ -72,9 +72,9 @@ class CreateEditEventForm extends StatelessWidget {
                                           height: 150,
                                         ),
                               )
-                              : Column(
+                              : const Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
-                                children: const [
+                                children: [
                                   Icon(
                                     Icons.upload,
                                     size: 40,
@@ -148,7 +148,7 @@ class CreateEditEventForm extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 child: Text(
                   'Error: \\${c.eventTypesError.value}',
-                  style: TextStyle(color: Colors.red),
+                  style: const TextStyle(color: Colors.red),
                 ),
               )
             else
@@ -166,7 +166,7 @@ class CreateEditEventForm extends StatelessWidget {
                             value: type.id,
                             child: Text(
                               type.name,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontWeight: FontWeight.w500,
                                 fontSize: 16,
                               ),
