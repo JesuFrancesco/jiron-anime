@@ -85,6 +85,7 @@ class EventService {
       "where[id]": id,
       "include[eventType]": true,
       "include[attendees]": true,
+      "include[profile]": true,
     };
 
     final res = await http.get(

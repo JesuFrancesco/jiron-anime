@@ -566,8 +566,11 @@ class SingleEventPage extends StatelessWidget {
                               children: [
                                 CircleAvatar(
                                   radius: 24,
-                                  backgroundImage: NetworkImage(
-                                    'https://randomuser.me/api/portraits/women/44.jpg',
+                                  backgroundColor: colors.primary,
+                                  child: Icon(
+                                    Icons.person,
+                                    color: colors.onPrimary,
+                                    size: 28,
                                   ),
                                 ),
                                 const SizedBox(width: 12),
@@ -582,7 +585,7 @@ class SingleEventPage extends StatelessWidget {
                                           ),
                                     ),
                                     Text(
-                                      event.profileId ?? '-',
+                                      event.profile?.email ?? '-',
                                       style: theme.textTheme.bodyMedium
                                           ?.copyWith(
                                             color: colors.onSurface.withValues(
