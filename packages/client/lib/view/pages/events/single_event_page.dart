@@ -48,7 +48,7 @@ class SingleEventPage extends StatelessWidget {
           appBar: AppBar(
             title: Text(
               event.title ?? 'Evento',
-              style: TextStyle(fontSize: 26),
+              style: const TextStyle(fontSize: 26),
             ),
             backgroundColor: Colors.transparent,
             elevation: 0,
@@ -77,7 +77,7 @@ class SingleEventPage extends StatelessWidget {
                   fit: BoxFit.cover,
                 ),
 
-                10.pv,
+                const SizedBox(height: 10),
 
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -105,7 +105,7 @@ class SingleEventPage extends StatelessWidget {
                             visualDensity: VisualDensity.standard,
                           ),
 
-                          10.ph,
+                          const SizedBox(width: 10),
 
                           Chip(
                             label: Text(
@@ -132,7 +132,7 @@ class SingleEventPage extends StatelessWidget {
                         ],
                       ),
 
-                      10.pv,
+                      const SizedBox(height: 10),
 
                       Text(
                         event.title ?? '-',
@@ -144,7 +144,7 @@ class SingleEventPage extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
 
-                      10.pv,
+                      const SizedBox(height: 10),
 
                       Row(
                         children: [
@@ -154,7 +154,7 @@ class SingleEventPage extends StatelessWidget {
                             color: colors.onSurface.withValues(alpha: 0.7),
                           ),
 
-                          4.ph,
+                          const SizedBox(width: 6),
 
                           Expanded(
                             child: Text(
@@ -171,7 +171,7 @@ class SingleEventPage extends StatelessWidget {
                         ],
                       ),
 
-                      10.pv,
+                      const SizedBox(height: 10),
 
                       // Botón de Editar/Eliminar en caso sea el organizador
                       if (event.profileId == AuthService.getProfileId()) ...[
@@ -353,12 +353,12 @@ class SingleEventPage extends StatelessWidget {
                         ),
                       ],
 
-                      10.pv,
+                      const SizedBox(height: 10),
                     ],
                   ),
                 ),
 
-                10.pv,
+                const SizedBox(height: 10),
 
                 // TabBar
                 Padding(
@@ -494,7 +494,7 @@ class SingleEventPage extends StatelessWidget {
                               ),
                             ),
 
-                            20.pv,
+                            const SizedBox(height: 20),
                           ],
                         ),
                       ),
