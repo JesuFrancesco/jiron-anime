@@ -23,6 +23,7 @@ class SingleEventController extends GetxController {
     error.value = '';
     try {
       final fetched = await EventService().fetchEventById(eventId);
+
       event.value = fetched;
     } catch (e) {
       error.value = 'No se pudo cargar el evento';
