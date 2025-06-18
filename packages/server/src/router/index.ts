@@ -35,6 +35,7 @@ import { TagRouter } from "../generated/express/Tag";
 import { ProductTagRouter } from "../generated/express/ProductTag";
 import { EventTypeRouter } from "../generated/express/EventType";
 import { EventRouter } from "../generated/express/Event";
+import { EventAttendeeRouter } from "../generated/express/EventAttendee";
 
 const API_ROUTER = Router();
 
@@ -94,6 +95,11 @@ const eventsRouter = EventRouter({
   ...commonRouterConfig,
 });
 API_ROUTER.use(eventsRouter);
+
+const eventAttendeeRouter = EventAttendeeRouter({
+  ...commonRouterConfig,
+});
+API_ROUTER.use(eventAttendeeRouter);
 
 API_ROUTER.use(orderRouter);
 

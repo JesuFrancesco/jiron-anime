@@ -5,6 +5,7 @@ import 'package:http_status/http_status.dart';
 import 'package:jiron_anime/config/config.dart';
 import 'package:jiron_anime/model/entity/events/event.dart';
 import 'package:jiron_anime/model/entity/events/event_type.dart';
+import 'package:jiron_anime/model/service/auth_service.dart';
 import 'package:jiron_anime/view/components/dialogs.dart';
 import 'package:jiron_anime/utils/query_string.dart';
 import 'package:jiron_anime/utils/supabase_utils.dart';
@@ -59,7 +60,7 @@ class EventService {
     final queryParams = {
       "orderBy[createdAt]": "desc",
       "include[eventType]": true,
-      // todo: obtener solo campos necesarios (Omit no funciona)
+      // TODO: obtener solo campos necesarios (Omit no funciona)
       // "omit[description]": true,
       // "omit[duration]": true,
     };
@@ -80,7 +81,11 @@ class EventService {
   }
 
   Future<Event> fetchEventById(String id) async {
-    final queryParam = {"where[id]": id, "include[eventType]": true};
+    final queryParam = {
+      "where[id]": id,
+      "include[eventType]": true,
+      "include[attendees]": true,
+    };
 
     final res = await http.get(
       Uri.parse(
@@ -140,5 +145,47 @@ class EventService {
 
     final dynamic data = jsonDecode(res.body);
     return Event.fromJson(data as Map<String, dynamic>);
+  }
+
+  Future<bool> registerToEvent(int eventId) async {
+    final encodedBody = json.encode({
+      "data": {"eventId": eventId, "profileId": AuthService.getProfileId()},
+    });
+
+    final res = await http.post(
+      Uri.parse("${Config.apiUrl}/eventattendee"),
+      body: encodedBody,
+      headers: {
+        "Content-Type": "application/json",
+        ...getSupabaseAuthHeaders(),
+      },
+    );
+
+    if (!res.statusCode.isSuccessfulHttpStatusCode) {
+      Get.dialog(ErrorDialog(message: "Algo salió mal.\n${res.body}"));
+      return false;
+    }
+
+    return true;
+  }
+
+  Future<bool> unregisterFromEvent(String attendeeId) async {
+    final encodedBody = json.encode({
+      "where": {"id": attendeeId},
+    });
+
+    final res = await http.delete(
+      Uri.parse("${Config.apiUrl}/eventattendee"),
+      body: encodedBody,
+      headers: {
+        "Content-Type": "application/json",
+        ...getSupabaseAuthHeaders(),
+      },
+    );
+    if (!res.statusCode.isSuccessfulHttpStatusCode) {
+      Get.dialog(ErrorDialog(message: "Algo salió mal.\n${res.body}"));
+      return false;
+    }
+    return true;
   }
 }
