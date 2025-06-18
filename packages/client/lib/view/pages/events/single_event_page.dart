@@ -279,10 +279,63 @@ class SingleEventPage extends StatelessWidget {
                         SizedBox(
                           width: double.infinity,
                           child: FilledButton.icon(
-                            onPressed: () {},
-                            label: const Text('Registrarse'),
-                            icon: const Icon(
-                              Icons.app_registration_outlined,
+                            onPressed:
+                                c.checkIfEventIsPast()
+                                    ? null
+                                    : () async {
+                                      if (c.isUserRegistered()) {
+                                        final success =
+                                            await c.unregisterFromEvent();
+                                        if (success) {
+                                          await c.fetchEvent();
+                                          Get.snackbar(
+                                            'Registro cancelado',
+                                            'Tu registro ha sido cancelado correctamente.',
+                                            snackPosition: SnackPosition.BOTTOM,
+                                          );
+                                        } else {
+                                          Get.snackbar(
+                                            'Error',
+                                            'No se pudo cancelar el registro.',
+                                            snackPosition: SnackPosition.BOTTOM,
+                                            backgroundColor: Colors.red,
+                                            colorText: Colors.white,
+                                          );
+                                        }
+                                      } else {
+                                        final success =
+                                            await c.registerToEvent();
+                                        if (success) {
+                                          await c.fetchEvent();
+                                          Get.snackbar(
+                                            'Registro exitoso',
+                                            'Te has registrado correctamente al evento.',
+                                            snackPosition: SnackPosition.BOTTOM,
+                                          );
+                                        } else {
+                                          Get.snackbar(
+                                            'Error',
+                                            'No se pudo completar el registro.',
+                                            snackPosition: SnackPosition.BOTTOM,
+                                            backgroundColor: Colors.red,
+                                            colorText: Colors.white,
+                                          );
+                                        }
+                                      }
+                                    },
+
+                            label: Text(
+                              c.checkIfEventIsPast()
+                                  ? 'El evento ha terminado'
+                                  : c.isUserRegistered()
+                                  ? 'Cancelar registro'
+                                  : 'Registrarse',
+                            ),
+
+                            icon: Icon(
+                              c.isUserRegistered()
+                                  ? Icons.cancel
+                                  : Icons.app_registration_outlined,
                               size: 20,
                             ),
                             style: FilledButton.styleFrom(

@@ -1,3 +1,4 @@
+import 'package:jiron_anime/model/entity/events/event_attendees.dart';
 import 'package:jiron_anime/model/entity/events/event_type.dart';
 import 'package:jiron_anime/model/entity/model_base.dart';
 
@@ -32,6 +33,8 @@ class Event implements ToJson {
 
   String? profileId;
 
+  List<EventAttendees>? attendees;
+
   Event({
     this.id,
     this.createdAt,
@@ -55,6 +58,7 @@ class Event implements ToJson {
     this.mainImageUrl,
     this.activities,
     this.profileId,
+    this.attendees,
   });
 
   factory Event.fromJson(Map<String, dynamic> json) => Event(
@@ -88,6 +92,12 @@ class Event implements ToJson {
             ?.map((e) => e as String)
             .toList(),
     profileId: json['profileId'] as String?,
+    attendees:
+        json['attendees'] != null
+            ? (json['attendees'] as List)
+                .map((e) => EventAttendees.fromJson(e as Map<String, dynamic>))
+                .toList()
+            : null,
   );
 
   @override
@@ -114,5 +124,7 @@ class Event implements ToJson {
     if (mainImageUrl != null) 'mainImageUrl': mainImageUrl,
     if (activities != null) 'activities': activities,
     if (profileId != null) 'profileId': profileId,
+    if (attendees != null)
+      'attendees': attendees!.map((a) => a.toJson()).toList(),
   });
 }
