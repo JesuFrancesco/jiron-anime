@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:jiron_anime/view/components/custom_layout.dart';
 import 'package:jiron_anime/view/components/auth_controller.dart';
 import 'package:jiron_anime/utils/sizedbox_entension.dart';
-import 'package:get/get.dart';
 import 'package:jiron_anime/view/pages/forum/forum_page.dart'; // para ForumPost
 import 'package:jiron_anime/view/pages/forum/forum_users.dart';
-
 
 class ForumComment {
   final String username;
@@ -28,28 +26,30 @@ class ForumDetailPage extends StatefulWidget {
 }
 
 class _ForumDetailPageState extends State<ForumDetailPage> {
-  late List<ForumComment> staticComments ;
+  late List<ForumComment> staticComments;
 
-    @override
-    void initState() {
-      super.initState();
-      staticComments = [...widget.post.comments];
-    }
+  @override
+  void initState() {
+    super.initState();
+    staticComments = [...widget.post.comments];
+  }
 
   final TextEditingController _commentController = TextEditingController();
 
   void _addComment() {
-  if (_commentController.text.trim().isEmpty) return;
-  setState(() {
-  final newComment = ForumComment(
-    username: AuthController.fullName ?? 'Anónimo',
-    avatarUrl: users.last.avatarUrl,
-    content: _commentController.text.trim(),
-  );
-  staticComments.add(newComment);
-  widget.post.comments.add(newComment); // <-- importante para reflejar fuera
-});
-}
+    if (_commentController.text.trim().isEmpty) return;
+    setState(() {
+      final newComment = ForumComment(
+        username: AuthController.fullName ?? 'Anónimo',
+        avatarUrl: users.last.avatarUrl,
+        content: _commentController.text.trim(),
+      );
+      staticComments.add(newComment);
+      widget.post.comments.add(
+        newComment,
+      ); // <-- importante para reflejar fuera
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -97,11 +97,15 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
                             children: [
                               CircleAvatar(
                                 backgroundImage: NetworkImage(post.avatarUrl),
-                                radius: 16
+                                radius: 16,
                               ),
                               8.ph,
-                              Text(post.username,
-                                style: const TextStyle(fontWeight: FontWeight.bold)),
+                              Text(
+                                post.username,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                             ],
                           ),
                           8.pv,
@@ -123,7 +127,10 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
                             children: [
                               _iconText(Icons.thumb_up, post.likes.toString()),
                               8.ph,
-                              _iconText(Icons.comment, post.comments.length.toString()),
+                              _iconText(
+                                Icons.comment,
+                                post.comments.length.toString(),
+                              ),
                               8.ph,
                               _iconText(Icons.share, post.shares.toString()),
                             ],
@@ -151,8 +158,13 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
                       itemBuilder: (context, i) {
                         final c = staticComments[i];
                         return ListTile(
-                          leading: CircleAvatar(backgroundImage: NetworkImage(c.avatarUrl)),
-                          title: Text(c.username, style: const TextStyle(fontWeight: FontWeight.bold)),
+                          leading: CircleAvatar(
+                            backgroundImage: NetworkImage(c.avatarUrl),
+                          ),
+                          title: Text(
+                            c.username,
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
                           subtitle: Text(c.content),
                         );
                       },
@@ -170,7 +182,10 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
                     decoration: const InputDecoration(
                       hintText: 'Escribe un comentario...',
                       border: OutlineInputBorder(),
-                      contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 8,
+                      ),
                     ),
                   ),
                 ),
