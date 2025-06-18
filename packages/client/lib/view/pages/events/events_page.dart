@@ -1,8 +1,8 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:jiron_anime/model/entity/events/event.dart';
 import 'package:jiron_anime/utils/event_format_utils.dart';
-import 'package:jiron_anime/utils/sizedbox_entension.dart';
 import 'package:jiron_anime/view/components/custom_layout.dart';
 import 'package:jiron_anime/view/pages/events/create_edit_event_page.dart';
 import 'package:jiron_anime/view/pages/events/single_event_page.dart';
@@ -128,207 +128,222 @@ class _EventsList extends StatelessWidget {
       return const Center(child: Text('No hay eventos.'));
     }
 
-    return ListView.separated(
+    return ListView.builder(
       itemCount: events.length,
-      separatorBuilder: (_, __) => const SizedBox(height: 20),
       itemBuilder: (context, index) {
         final event = events[index];
-        return InkWell(
-          onTap: () async {
-            final result = await Get.to(
-              () => SingleEventPage(eventId: event.id?.toString() ?? ""),
-            );
-
-            final controller = Get.find<EventsController>();
-
-            if (result == true) {
-              await controller.fetchEvents();
-            }
-          },
-          child: Container(
-            decoration: BoxDecoration(
-              color: colors.surface.withValues(alpha: 0.95),
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                  color: colors.shadow.withValues(alpha: 0.08),
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Imagen con chips superpuestos
-                Stack(
-                  children: [
-                    ClipRRect(
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(16),
-                        topRight: Radius.circular(16),
-                      ),
-                      child:
-                          event.mainImageUrl != null &&
-                                  event.mainImageUrl!.isNotEmpty
-                              ? Image.network(
-                                event.mainImageUrl!,
-                                height: 160,
-                                width: double.infinity,
-                                fit: BoxFit.cover,
-                                errorBuilder:
-                                    (context, error, stackTrace) =>
-                                        _ImagePlaceholder(),
-                              )
-                              : _ImagePlaceholder(),
+        return Column(
+          children: [
+            InkWell(
+              onTap: () async {
+                final result = await Get.to(
+                  () => SingleEventPage(eventId: event.id?.toString() ?? ""),
+                );
+                final controller = Get.find<EventsController>();
+                if (result == true) {
+                  await controller.fetchEvents();
+                }
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  color: colors.surface.withValues(alpha: 0.95),
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: colors.shadow.withValues(alpha: 0.08),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
                     ),
-                    // Chips en la esquina superior izquierda
-                    Positioned(
-                      top: 12,
-                      left: 12,
-                      child: Row(
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Imagen con chips superpuestos
+                    Stack(
+                      children: [
+                        ClipRRect(
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(16),
+                            topRight: Radius.circular(16),
+                          ),
+                          child:
+                              event.mainImageUrl != null &&
+                                      event.mainImageUrl!.isNotEmpty
+                                  ? CachedNetworkImage(
+                                    imageUrl: event.mainImageUrl!,
+                                    height: 160,
+                                    width: double.infinity,
+                                    fit: BoxFit.cover,
+                                    placeholder:
+                                        (context, url) => _ImagePlaceholder(),
+                                    errorWidget:
+                                        (context, url, error) =>
+                                            _ImagePlaceholder(),
+                                  )
+                                  : _ImagePlaceholder(),
+                        ),
+                        // Chips en la esquina superior izquierda
+                        Positioned(
+                          top: 12,
+                          left: 12,
+                          child: Row(
+                            children: [
+                              Chip(
+                                label: Text(
+                                  event.eventType?.name.toString() ?? '-',
+                                  style: theme.textTheme.labelSmall?.copyWith(
+                                    color: colors.onPrimary,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                                backgroundColor: colors.primary,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                  side: BorderSide(color: colors.primary),
+                                ),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 0,
+                                ),
+                                visualDensity: VisualDensity.compact,
+                              ),
+                              const SizedBox(width: 8),
+                              Chip(
+                                label: Text(
+                                  EventFormatUtils.getEventPriceLabel(
+                                    event.isFree,
+                                    event.price,
+                                  ),
+                                  style: theme.textTheme.labelSmall?.copyWith(
+                                    color: colors.primary,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                                backgroundColor: colors.onPrimary,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                side: BorderSide(
+                                  color: colors.primary,
+                                  width: 1.5,
+                                ),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 0,
+                                ),
+                                visualDensity: VisualDensity.compact,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 16,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Chip(
-                            label: Text(
-                              event.eventType?.name.toString() ?? '-',
-                              style: theme.textTheme.labelSmall?.copyWith(
-                                color: colors.onPrimary,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 12,
-                              ),
+                          Text(
+                            event.title ?? '-',
+                            style: theme.textTheme.titleMedium?.copyWith(
+                              fontWeight: FontWeight.bold,
                             ),
-                            backgroundColor: colors.primary,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
-                              side: BorderSide(color: colors.primary),
-                            ),
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 0,
-                            ),
-                            visualDensity: VisualDensity.compact,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
-                          const SizedBox(width: 8),
-                          Chip(
-                            label: Text(
-                              EventFormatUtils.getEventPriceLabel(
-                                event.isFree,
-                                event.price,
+                          const SizedBox(height: 12),
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.calendar_today_rounded,
+                                size: 18,
+                                color: colors.onSurface.withValues(alpha: 0.7),
                               ),
-                              style: theme.textTheme.labelSmall?.copyWith(
-                                color: colors.primary,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 12,
+                              const SizedBox(width: 6),
+                              Text(
+                                '${event.date ?? ''}${event.time != null && event.time!.isNotEmpty ? ' – ${event.time}' : ''}',
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                  color: colors.onSurface.withValues(
+                                    alpha: 0.7,
+                                  ),
+                                ),
                               ),
-                            ),
-                            backgroundColor: colors.onPrimary,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            side: BorderSide(color: colors.primary, width: 1.5),
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 0,
-                            ),
-                            visualDensity: VisualDensity.compact,
+                            ],
                           ),
+                          const SizedBox(height: 8),
+                          Row(
+                            children: [
+                              Icon(
+                                EventFormatUtils.getEventLocationIcon(
+                                  event.isVirtual,
+                                  event.isOnCampus,
+                                ),
+                                size: 18,
+                                color: colors.onSurface.withValues(alpha: 0.7),
+                              ),
+                              const SizedBox(width: 6),
+                              Expanded(
+                                child: Text(
+                                  EventFormatUtils.getEventLocationLabel(event),
+                                  style: theme.textTheme.bodyMedium?.copyWith(
+                                    color: colors.onSurface.withValues(
+                                      alpha: 0.7,
+                                    ),
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          // Capacidad de personas
+                          if (event.capacity != null)
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.people_alt_rounded,
+                                  size: 18,
+                                  color: colors.onSurface.withValues(
+                                    alpha: 0.7,
+                                  ),
+                                ),
+                                const SizedBox(width: 6),
+                                Text(
+                                  '${event.capacity} personas',
+                                  style: theme.textTheme.bodyMedium?.copyWith(
+                                    color: colors.onSurface.withValues(
+                                      alpha: 0.7,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          const SizedBox(height: 12),
+                          // Descripción (máx 2 líneas)
+                          if (event.description != null &&
+                              event.description!.isNotEmpty)
+                            Text(
+                              event.description!,
+                              style: theme.textTheme.bodySmall,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
                         ],
                       ),
                     ),
                   ],
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 16,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        event.title ?? '-',
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: 12),
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.calendar_today_rounded,
-                            size: 18,
-                            color: colors.onSurface.withValues(alpha: 0.7),
-                          ),
-                          const SizedBox(width: 6),
-                          Text(
-                            '${event.date ?? ''}${event.time != null && event.time!.isNotEmpty ? ' – ${event.time}' : ''}',
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              color: colors.onSurface.withValues(alpha: 0.7),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      Row(
-                        children: [
-                          Icon(
-                            EventFormatUtils.getEventLocationIcon(
-                              event.isVirtual,
-                              event.isOnCampus,
-                            ),
-                            size: 18,
-                            color: colors.onSurface.withValues(alpha: 0.7),
-                          ),
-                          const SizedBox(width: 6),
-                          Expanded(
-                            child: Text(
-                              EventFormatUtils.getEventLocationLabel(event),
-                              style: theme.textTheme.bodyMedium?.copyWith(
-                                color: colors.onSurface.withValues(alpha: 0.7),
-                              ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      // Capacidad de personas
-                      if (event.capacity != null)
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.people_alt_rounded,
-                              size: 18,
-                              color: colors.onSurface.withValues(alpha: 0.7),
-                            ),
-                            const SizedBox(width: 6),
-                            Text(
-                              '${event.capacity} personas',
-                              style: theme.textTheme.bodyMedium?.copyWith(
-                                color: colors.onSurface.withValues(alpha: 0.7),
-                              ),
-                            ),
-                          ],
-                        ),
-                      const SizedBox(height: 12),
-                      // Descripción (máx 2 líneas)
-                      if (event.description != null &&
-                          event.description!.isNotEmpty)
-                        Text(
-                          event.description!,
-                          style: theme.textTheme.bodySmall,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                    ],
-                  ),
-                ),
-              ],
+              ),
             ),
-          ),
+            if (index != events.length - 1) const SizedBox(height: 20),
+          ],
         );
       },
     );
