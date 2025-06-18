@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:jiron_anime/utils/event_format_utils.dart';
-import 'package:jiron_anime/utils/sizedbox_entension.dart';
 import 'package:jiron_anime/view/pages/events/create_edit_event_page.dart';
 import 'package:jiron_anime/view/theme/colors.dart';
 import 'package:jiron_anime/model/service/auth_service.dart';

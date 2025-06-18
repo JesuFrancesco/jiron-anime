@@ -40,7 +40,7 @@ class _ProductCarouselState extends State<ProductCarousel> {
             child: SizedBox.expand(
               child: ColorFiltered(
                 colorFilter: ColorFilter.mode(
-                  Colors.white..withValues(alpha: 0.3),
+                  Colors.white.withValues(alpha: .1),
                   BlendMode.lighten,
                 ),
                 child:
@@ -51,7 +51,7 @@ class _ProductCarouselState extends State<ProductCarousel> {
                           fit: BoxFit.cover,
                         )
                         : Container(
-                          color: Colors.white..withValues(alpha: 0.3),
+                          color: Colors.white.withValues(alpha: .3),
                           child: const Center(
                             child: Icon(
                               Icons.help_outline,
@@ -80,7 +80,7 @@ class _ProductCarouselState extends State<ProductCarousel> {
                           horizontal: 10,
                         ),
                         decoration: BoxDecoration(
-                          color: Colors.white..withValues(alpha: 0.5),
+                          color: Colors.white.withValues(alpha: 0.3),
                           border: Border.all(color: Colors.black, width: 2),
                           borderRadius: BorderRadius.circular(20),
                         ),

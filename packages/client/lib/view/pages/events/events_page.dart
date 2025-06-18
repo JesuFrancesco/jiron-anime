@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:jiron_anime/model/entity/events/event.dart';
+import 'package:jiron_anime/model/service/auth_service.dart';
 import 'package:jiron_anime/utils/event_format_utils.dart';
 import 'package:jiron_anime/view/components/custom_layout.dart';
 import 'package:jiron_anime/view/pages/events/create_edit_event_page.dart';
@@ -136,6 +137,10 @@ class _EventsList extends StatelessWidget {
           children: [
             InkWell(
               onTap: () async {
+                if (!AuthService.isLoggedIn) {
+                  Get.toNamed("/sign-in");
+                  return;
+                }
                 final result = await Get.to(
                   () => SingleEventPage(eventId: event.id?.toString() ?? ""),
                 );
