@@ -1,7 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:jiron_anime/utils/event_format_utils.dart';
 import 'package:jiron_anime/view/pages/events/create_edit_event_page.dart';
+import 'package:jiron_anime/view/pages/events/widgets/image_placeholder.dart';
 import 'package:jiron_anime/view/theme/colors.dart';
 import 'package:jiron_anime/model/service/auth_service.dart';
 import 'package:jiron_anime/viewmodel/controllers/events/single_event_controller.dart';
@@ -20,10 +22,19 @@ class SingleEventPage extends StatelessWidget {
 
     return Obx(() {
       if (c.isLoading.value) {
-        return const Center(child: CircularProgressIndicator());
+        return Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              stops: [0.0, 0.5, 1],
+              colors: AppColors.backgroundLinearGradientColors,
+            ),
+          ),
+          child: const Center(child: CircularProgressIndicator()),
+        );
       }
 
-      // TODO: Cambiar por algo generico
       if (c.error.value.isNotEmpty) {
         return Center(child: Text(c.error.value));
       }
@@ -69,11 +80,14 @@ class SingleEventPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Image.network(
-                  event.mainImageUrl!,
+                CachedNetworkImage(
+                  imageUrl: event.mainImageUrl!,
                   height: 250,
                   width: double.infinity,
                   fit: BoxFit.cover,
+                  placeholder: (context, url) => const ImagePlaceholder(),
+                  errorWidget:
+                      (context, url, error) => const ImagePlaceholder(),
                 ),
 
                 const SizedBox(height: 10),

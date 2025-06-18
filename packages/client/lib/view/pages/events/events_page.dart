@@ -7,6 +7,7 @@ import 'package:jiron_anime/utils/event_format_utils.dart';
 import 'package:jiron_anime/view/components/custom_layout.dart';
 import 'package:jiron_anime/view/pages/events/create_edit_event_page.dart';
 import 'package:jiron_anime/view/pages/events/single_event_page.dart';
+import 'package:jiron_anime/view/pages/events/widgets/image_placeholder.dart';
 import 'package:jiron_anime/viewmodel/controllers/events/events_controller.dart';
 
 class EventsPage extends StatefulWidget {
@@ -181,12 +182,13 @@ class _EventsList extends StatelessWidget {
                                     width: double.infinity,
                                     fit: BoxFit.cover,
                                     placeholder:
-                                        (context, url) => _ImagePlaceholder(),
+                                        (context, url) =>
+                                            const ImagePlaceholder(),
                                     errorWidget:
                                         (context, url, error) =>
-                                            _ImagePlaceholder(),
+                                            const ImagePlaceholder(),
                                   )
-                                  : _ImagePlaceholder(),
+                                  : const ImagePlaceholder(),
                         ),
                         // Chips en la esquina superior izquierda
                         Positioned(
@@ -351,31 +353,6 @@ class _EventsList extends StatelessWidget {
           ],
         );
       },
-    );
-  }
-}
-
-class _ImagePlaceholder extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final colors = Get.theme.colorScheme;
-    return Container(
-      height: 160,
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: colors.surfaceContainerHighest,
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(16),
-          topRight: Radius.circular(16),
-        ),
-      ),
-      child: Center(
-        child: Icon(
-          Icons.image,
-          size: 48,
-          color: colors.onSurface.withValues(alpha: 0.25),
-        ),
-      ),
     );
   }
 }
