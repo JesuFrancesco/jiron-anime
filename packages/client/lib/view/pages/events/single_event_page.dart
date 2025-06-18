@@ -17,18 +17,24 @@ class SingleEventPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Get.theme;
     final colors = theme.colorScheme;
+    var brightness = Get.mediaQuery.platformBrightness;
+    bool isDarkMode = brightness == Brightness.dark;
+
     final SingleEventController c = Get.put(SingleEventController(eventId));
     bool wasEdited = false;
 
     return Obx(() {
       if (c.isLoading.value) {
         return Container(
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               stops: [0.0, 0.5, 1],
-              colors: AppColors.backgroundLinearGradientColors,
+              colors:
+                  isDarkMode
+                      ? AppColors.darkBackgroundLinearGradientColors
+                      : AppColors.backgroundLinearGradientColors,
             ),
           ),
           child: const Center(child: CircularProgressIndicator()),
@@ -45,12 +51,15 @@ class SingleEventPage extends StatelessWidget {
       }
 
       return Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             stops: [0.0, 0.5, 1],
-            colors: AppColors.backgroundLinearGradientColors,
+            colors:
+                isDarkMode
+                    ? AppColors.darkBackgroundLinearGradientColors
+                    : AppColors.backgroundLinearGradientColors,
           ),
         ),
         child: Scaffold(

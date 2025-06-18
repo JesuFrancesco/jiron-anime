@@ -349,7 +349,7 @@ class _EventsList extends StatelessWidget {
                 ),
               ),
             ),
-            if (index != events.length - 1) const SizedBox(height: 20),
+            const SizedBox(height: 20),
           ],
         );
       },
