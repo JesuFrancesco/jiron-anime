@@ -53,6 +53,7 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     final post = widget.post;
     return Scaffold(
       body: CustomLayout(
@@ -61,7 +62,7 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const BackButton(color: Colors.black),
+                BackButton(color: isDarkMode ? Colors.white : Colors.black),
                 const Text('Post', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
                 AuthController.getClipOvalAvatar(),
               ],
@@ -74,8 +75,19 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
                     Container(
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFFFC3A0),
-                        border: Border.all(),
+  // Usa color sólido en modo oscuro, gradiente en modo claro
+                        color: isDarkMode ? Colors.grey[850] : null,
+                        gradient: isDarkMode
+                            ? null
+                            : LinearGradient(
+                                colors: [
+                                  const Color(0xFFFFD6A5),
+                                  const Color(0xFFFFC3A0),
+                                ],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                              ),
+                        border: Border.all(color: Colors.black),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Column(
@@ -95,11 +107,11 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
                           8.pv,
                           Text(
                             post.question,
-                            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.purple),
+                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: isDarkMode ? Colors.white : Color(0xFFB22525)),
                           ),
                           8.pv,
-                          const Text(
-                            'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s…'
+                          Text(
+                            post.userText,
                           ),
                           8.pv,
                           ClipRRect(
@@ -120,14 +132,14 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
                       ),
                     ),
                     16.pv,
-                    const Align(
+                    Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
                         'Comentarios',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: Colors.purple
+                          color: isDarkMode ? Colors.white : Color(0xFFB22525),
                         ),
                       ),
                     ),
@@ -164,7 +176,7 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
                 ),
                 IconButton(
                   onPressed: _addComment,
-                  icon: const Icon(Icons.send, color: Colors.orange),
+                  icon: const Icon(Icons.send, color: Color(0xFFB22525)),
                 ),
               ],
             ),

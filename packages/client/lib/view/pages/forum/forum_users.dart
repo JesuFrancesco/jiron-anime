@@ -6,7 +6,7 @@ class ForumUser {
 }
 
 final List<ForumUser> users = [
-  ForumUser(name: 'user24', avatarUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRzMonHZavwoawW_Rvz6AKrIHLOm1lYtn48Rw&s'),
-  ForumUser(name: 'user25', avatarUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTYcIQV8brWDNJkKz6N5ATQyM91W8oGWVD-Og&s'),
+  ForumUser(name: 'user24', avatarUrl: 'https://cdn.pfps.gg/pfps/3260-eren-yeager.png'),
+  ForumUser(name: 'user25', avatarUrl: 'https://i.redd.it/kggiebjzutu41.jpg'),
   ForumUser(name: 'Patrick', avatarUrl: 'https://cdn-icons-png.flaticon.com/512/518/518713.png'),
 ];
