@@ -8,21 +8,6 @@ import 'package:jiron_anime/view/pages/events/create_edit_event_page.dart';
 import 'package:jiron_anime/view/pages/events/single_event_page.dart';
 import 'package:jiron_anime/viewmodel/controllers/events/events_controller.dart';
 
-// TODO: Agregar paginación
-class OrderItem {
-  final String label;
-  final String value;
-
-  OrderItem({required this.label, required this.value});
-}
-
-List<OrderItem> orderItems = [
-  OrderItem(label: 'Fecha próxima', value: 'next_date'),
-  OrderItem(label: 'Popular', value: 'popular'),
-  OrderItem(label: 'Precio (Menor a Mayor)', value: 'price'),
-  OrderItem(label: 'Precio (Mayor a Menor)', value: 'price'),
-];
-
 class EventsPage extends StatefulWidget {
   const EventsPage({super.key});
 
@@ -31,9 +16,6 @@ class EventsPage extends StatefulWidget {
 }
 
 class _EventsPageState extends State<EventsPage> {
-  final TextEditingController _orderByController = TextEditingController();
-  OrderItem _selectedOrder = orderItems.first;
-
   final EventsController _controller = Get.put(EventsController());
 
   @override
@@ -112,38 +94,6 @@ class _EventsPageState extends State<EventsPage> {
 
               18.pv,
 
-              // TODO: Cambiar por buscador y mover a filtros
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text('Ordenar por:'),
-                  10.ph,
-                  DropdownMenu<OrderItem>(
-                    initialSelection: orderItems.first,
-                    controller: _orderByController,
-                    width: context.width * 0.4,
-                    enableSearch: false,
-                    onSelected: (value) {
-                      if (value == null) return;
-
-                      _selectedOrder = value;
-
-                      print('Orden seleccionado: ${value.label}');
-                    },
-                    dropdownMenuEntries:
-                        orderItems
-                            .map(
-                              (item) => DropdownMenuEntry<OrderItem>(
-                                value: item,
-                                label: item.label,
-                              ),
-                            )
-                            .toList(),
-                  ),
-                ],
-              ),
-
               Expanded(
                 child: Obx(
                   () =>
@@ -196,177 +146,217 @@ class _EventsList extends StatelessWidget {
               await controller.fetchEvents();
             }
           },
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              final imageWidth = constraints.maxWidth * 0.4;
-
-              return Container(
-                height: 150,
-                decoration: BoxDecoration(
-                  color: colors.surface.withValues(alpha: 0.85),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: colors.outline.withValues(alpha: 0.4),
-                  ),
+          child: Container(
+            decoration: BoxDecoration(
+              color: colors.surface.withValues(alpha: 0.95),
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: colors.shadow.withValues(alpha: 0.08),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
                 ),
-                child: Row(
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Imagen con chips superpuestos
+                Stack(
                   children: [
-                    Container(
-                      width: imageWidth,
-                      height: 150,
-                      decoration: BoxDecoration(
-                        borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(12),
-                          bottomLeft: Radius.circular(12),
-                        ),
-                        image: DecorationImage(
-                          fit: BoxFit.cover,
-                          image: ResizeImage(
-                            NetworkImage(event.mainImageUrl!),
-                            width: imageWidth.round(),
-                            height: 120,
-                          ),
-                        ),
+                    ClipRRect(
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(16),
+                        topRight: Radius.circular(16),
                       ),
+                      child:
+                          event.mainImageUrl != null &&
+                                  event.mainImageUrl!.isNotEmpty
+                              ? Image.network(
+                                event.mainImageUrl!,
+                                height: 160,
+                                width: double.infinity,
+                                fit: BoxFit.cover,
+                                errorBuilder:
+                                    (context, error, stackTrace) =>
+                                        _ImagePlaceholder(),
+                              )
+                              : _ImagePlaceholder(),
                     ),
-
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 8,
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                Chip(
-                                  label: Text(
-                                    event.eventType?.name.toString() ?? '-',
-                                    style: theme.textTheme.labelSmall?.copyWith(
-                                      color: colors.onPrimary,
-                                    ),
-                                  ),
-                                  backgroundColor: colors.primary,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 8,
-                                    vertical: 0,
-                                  ),
-                                  visualDensity: VisualDensity.compact,
-                                ),
-
-                                8.ph,
-
-                                Chip(
-                                  label: Text(
-                                    EventFormatUtils.getEventPriceLabel(
-                                      event.isFree,
-                                      event.price,
-                                    ),
-                                    style: theme.textTheme.labelSmall?.copyWith(
-                                      color: colors.primary,
-                                    ),
-                                  ),
-                                  backgroundColor: colors.onPrimary,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  side: BorderSide(color: colors.primary),
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 8,
-                                    vertical: 0,
-                                  ),
-                                  visualDensity: VisualDensity.compact,
-                                ),
-                              ],
+                    // Chips en la esquina superior izquierda
+                    Positioned(
+                      top: 12,
+                      left: 12,
+                      child: Row(
+                        children: [
+                          Chip(
+                            label: Text(
+                              event.eventType?.name.toString() ?? '-',
+                              style: theme.textTheme.labelSmall?.copyWith(
+                                color: colors.onPrimary,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 12,
+                              ),
                             ),
-
-                            Text(
-                              event.title ?? '-',
-                              style: theme.textTheme.titleMedium,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
+                            backgroundColor: colors.primary,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                              side: BorderSide(color: colors.primary),
                             ),
-
-                            4.pv,
-
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.calendar_today_rounded,
-                                  size: 16,
-                                  color: colors.onSurface.withValues(
-                                    alpha: 0.7,
-                                  ),
-                                ),
-
-                                4.ph,
-
-                                Expanded(
-                                  child: Text(
-                                    // \u2013 es un guion largo
-                                    '${event.date ?? ''} \u2013 ${event.time ?? ''}',
-                                    style: theme.textTheme.bodyMedium?.copyWith(
-                                      color: colors.onSurface.withValues(
-                                        alpha: 0.7,
-                                      ),
-                                    ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                              ],
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 0,
                             ),
-
-                            4.pv,
-
-                            Row(
-                              children: [
-                                Icon(
-                                  EventFormatUtils.getEventLocationIcon(
-                                    event.isVirtual,
-                                    event.isOnCampus,
-                                  ),
-                                  size: 16,
-                                  color: colors.onSurface.withValues(
-                                    alpha: 0.7,
-                                  ),
-                                ),
-
-                                4.ph,
-
-                                Expanded(
-                                  child: Text(
-                                    EventFormatUtils.getEventLocationLabel(
-                                      event,
-                                    ),
-                                    style: theme.textTheme.bodyMedium?.copyWith(
-                                      color: colors.onSurface.withValues(
-                                        alpha: 0.7,
-                                      ),
-                                    ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                              ],
+                            visualDensity: VisualDensity.compact,
+                          ),
+                          const SizedBox(width: 8),
+                          Chip(
+                            label: Text(
+                              EventFormatUtils.getEventPriceLabel(
+                                event.isFree,
+                                event.price,
+                              ),
+                              style: theme.textTheme.labelSmall?.copyWith(
+                                color: colors.primary,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 12,
+                              ),
                             ),
-                          ],
-                        ),
+                            backgroundColor: colors.onPrimary,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            side: BorderSide(color: colors.primary, width: 1.5),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 0,
+                            ),
+                            visualDensity: VisualDensity.compact,
+                          ),
+                        ],
                       ),
                     ),
                   ],
                 ),
-              );
-            },
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 16,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        event.title ?? '-',
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 12),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.calendar_today_rounded,
+                            size: 18,
+                            color: colors.onSurface.withValues(alpha: 0.7),
+                          ),
+                          const SizedBox(width: 6),
+                          Text(
+                            '${event.date ?? ''}${event.time != null && event.time!.isNotEmpty ? ' – ${event.time}' : ''}',
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: colors.onSurface.withValues(alpha: 0.7),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Icon(
+                            EventFormatUtils.getEventLocationIcon(
+                              event.isVirtual,
+                              event.isOnCampus,
+                            ),
+                            size: 18,
+                            color: colors.onSurface.withValues(alpha: 0.7),
+                          ),
+                          const SizedBox(width: 6),
+                          Expanded(
+                            child: Text(
+                              EventFormatUtils.getEventLocationLabel(event),
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                color: colors.onSurface.withValues(alpha: 0.7),
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      // Capacidad de personas
+                      if (event.capacity != null)
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.people_alt_rounded,
+                              size: 18,
+                              color: colors.onSurface.withValues(alpha: 0.7),
+                            ),
+                            const SizedBox(width: 6),
+                            Text(
+                              '${event.capacity} personas',
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                color: colors.onSurface.withValues(alpha: 0.7),
+                              ),
+                            ),
+                          ],
+                        ),
+                      const SizedBox(height: 12),
+                      // Descripción (máx 2 líneas)
+                      if (event.description != null &&
+                          event.description!.isNotEmpty)
+                        Text(
+                          event.description!,
+                          style: theme.textTheme.bodySmall,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         );
       },
+    );
+  }
+}
+
+class _ImagePlaceholder extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final colors = Get.theme.colorScheme;
+    return Container(
+      height: 160,
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: colors.surfaceContainerHighest,
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(16),
+          topRight: Radius.circular(16),
+        ),
+      ),
+      child: Center(
+        child: Icon(
+          Icons.image,
+          size: 48,
+          color: colors.onSurface.withValues(alpha: 0.25),
+        ),
+      ),
     );
   }
 }
