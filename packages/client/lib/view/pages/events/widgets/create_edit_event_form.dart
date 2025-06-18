@@ -337,20 +337,31 @@ class CreateEditEventForm extends StatelessWidget {
               'Modalidad',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            Row(
+            Wrap(
+              spacing: 8,
               children: [
-                Radio<String>(
-                  value: 'Presencial',
-                  groupValue: c.modality.value,
-                  onChanged: (value) => c.modality.value = value!,
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Radio<String>(
+                      value: 'Presencial',
+                      groupValue: c.modality.value,
+                      onChanged: (value) => c.modality.value = value!,
+                    ),
+                    const Text('Presencial'),
+                  ],
                 ),
-                const Text('Presencial'),
-                Radio<String>(
-                  value: 'Virtual',
-                  groupValue: c.modality.value,
-                  onChanged: (value) => c.modality.value = value!,
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Radio<String>(
+                      value: 'Virtual',
+                      groupValue: c.modality.value,
+                      onChanged: (value) => c.modality.value = value!,
+                    ),
+                    const Text('Virtual'),
+                  ],
                 ),
-                const Text('Virtual'),
               ],
             ),
             if (isVirtual) ...[
