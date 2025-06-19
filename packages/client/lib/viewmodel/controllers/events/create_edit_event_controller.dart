@@ -124,7 +124,6 @@ class CreateEditEventController extends GetxController {
     mainImage.value = null;
     if (initialEvent != null && initialEvent!.mainImageUrl != null) {
       showInitialImage.value = false;
-      // TODO: Implementar lógica para borrar la imagen del storage de Supabase
     }
   }
 
@@ -193,23 +192,22 @@ class CreateEditEventController extends GetxController {
 
     // Verifica si es una edición o creación de evento
     if (initialEvent != null) {
-      print('Actualizando evento: ${newEvent.toJson()}');
       await _eventService.updateEvent(newEvent);
     } else {
       await _eventService.createNewEvent(newEvent);
-    }
 
-    Get.closeAllSnackbars();
-    Get.snackbar(
-      'Éxito',
-      initialEvent == null
-          ? 'Evento creado exitosamente'
-          : 'Evento editado exitosamente',
-      snackPosition: SnackPosition.BOTTOM,
-      backgroundColor: Colors.green.withValues(alpha: 0.8),
-      colorText: Colors.white,
-      margin: const EdgeInsets.all(16),
-    );
+      Get.closeAllSnackbars();
+      Get.snackbar(
+        'Éxito',
+        initialEvent == null
+            ? 'Evento creado exitosamente'
+            : 'Evento editado exitosamente',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+        margin: const EdgeInsets.all(16),
+      );
+    }
 
     if (context.mounted) {
       Navigator.of(context).pop(true);

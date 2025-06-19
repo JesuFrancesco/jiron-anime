@@ -220,6 +220,8 @@ class SingleEventPage extends StatelessWidget {
                                       'Evento actualizado',
                                       'Los datos del evento se actualizaron correctamente',
                                       snackPosition: SnackPosition.BOTTOM,
+                                      backgroundColor: Colors.green,
+                                      colorText: Colors.white,
                                     );
                                   }
                                 },
@@ -277,6 +279,16 @@ class SingleEventPage extends StatelessWidget {
                                         'Evento eliminado',
                                         'El evento fue eliminado correctamente',
                                         snackPosition: SnackPosition.BOTTOM,
+                                        backgroundColor: Colors.green,
+                                        colorText: Colors.white,
+                                      );
+                                    } else {
+                                      Get.snackbar(
+                                        'Error',
+                                        'No se pudo eliminar el evento',
+                                        snackPosition: SnackPosition.BOTTOM,
+                                        backgroundColor: Colors.red,
+                                        colorText: Colors.white,
                                       );
                                     }
                                   }
@@ -305,6 +317,7 @@ class SingleEventPage extends StatelessWidget {
                                 c.checkIfEventIsPast()
                                     ? null
                                     : () async {
+                                      Get.closeAllSnackbars();
                                       if (c.isUserRegistered()) {
                                         final success =
                                             await c.unregisterFromEvent();
@@ -314,6 +327,8 @@ class SingleEventPage extends StatelessWidget {
                                             'Registro cancelado',
                                             'Tu registro ha sido cancelado correctamente.',
                                             snackPosition: SnackPosition.BOTTOM,
+                                            backgroundColor: Colors.green,
+                                            colorText: Colors.white,
                                           );
                                         } else {
                                           Get.snackbar(
@@ -333,6 +348,8 @@ class SingleEventPage extends StatelessWidget {
                                             'Registro exitoso',
                                             'Te has registrado correctamente al evento.',
                                             snackPosition: SnackPosition.BOTTOM,
+                                            backgroundColor: Colors.green,
+                                            colorText: Colors.white,
                                           );
                                         } else {
                                           Get.snackbar(
