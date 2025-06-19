@@ -1,7 +1,7 @@
 name: jiron_anime
 description: "Cliente móvil para el proyecto de Interacción Humano Computador (2025-1)."
 publish_to: "none"
-version: 1.0.0
+version: 1.0.1
 
 environment:
   sdk: ^3.7.2
