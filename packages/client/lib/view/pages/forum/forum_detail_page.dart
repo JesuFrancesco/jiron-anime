@@ -1,3 +1,5 @@
+import 'dart:io';
+import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:jiron_anime/view/components/custom_layout.dart';
 import 'package:jiron_anime/view/components/auth_controller.dart';
@@ -41,13 +43,15 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
     setState(() {
       final newComment = ForumComment(
         username: AuthController.fullName ?? 'Anónimo',
-        avatarUrl: users.last.avatarUrl,
+        avatarUrl: AuthController.profileImageUrl ?? 'https://via.placeholder.com/150',
         content: _commentController.text.trim(),
       );
       staticComments.add(newComment);
       widget.post.comments.add(
         newComment,
-      ); // <-- importante para reflejar fuera
+      );
+      _commentController.clear(); 
+      FocusScope.of(context).unfocus();// <-- importante para reflejar fuera
     });
   }
 
@@ -56,6 +60,7 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     final post = widget.post;
     return Scaffold(
+      
       body: CustomLayout(
         child: Column(
           children: [
@@ -120,12 +125,21 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
                           8.pv,
                           ClipRRect(
                             borderRadius: BorderRadius.circular(8),
-                            child: Image.network(post.imageUrl, height: 140),
+                            child: imageWidget(post.imageUrl, height: 140),
                           ),
                           12.pv,
                           Row(
                             children: [
-                              _iconText(Icons.thumb_up, post.likes.toString()),
+                              _iconText(
+                                    Icons.thumb_up,
+                                    post.likes.toString(),
+                                    onTap: () {
+                                      setState(() {
+                                        post.likes++;
+                                      });
+                                    },
+                                  ),
+
                               8.ph,
                               _iconText(
                                 Icons.comment,
@@ -202,7 +216,57 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
     );
   }
 
-  Widget _iconText(IconData icon, String text) {
-    return Row(children: [Icon(icon, size: 16), 4.ph, Text(text)]);
-  }
+  Widget _iconText(IconData icon, String text, {VoidCallback? onTap, double size = 20}) {
+  return GestureDetector(
+    onTap: onTap,
+    child: Row(
+      children: [
+        Icon(icon, size: size),
+        4.ph,
+        Text(text),
+      ],
+    ),
+  );
+}
+Widget imageWidget(String path, {double? width, double? height, BoxFit? fit}) {
+  final isLocal = path.startsWith('/');
+
+  return GestureDetector(
+    onTap: () {
+      showDialog(
+        context: Get.context!,
+        builder: (_) => Dialog(
+          backgroundColor: Colors.transparent,
+          insetPadding: const EdgeInsets.all(10),
+          child: GestureDetector(
+            onTap: () => Navigator.pop(Get.context!),
+            child: InteractiveViewer(
+              child: isLocal
+                  ? Image.file(File(path))
+                  : Image.network(path),
+            ),
+          ),
+        ),
+      );
+    },
+    child: ClipRRect(
+      borderRadius: BorderRadius.circular(8),
+      child: isLocal
+          ? Image.file(
+              File(path),
+              width: width,
+              height: height,
+              fit: fit,
+              errorBuilder: (_, __, ___) => const Icon(Icons.broken_image),
+            )
+          : Image.network(
+              path,
+              width: width,
+              height: height,
+              fit: fit,
+              errorBuilder: (_, __, ___) => const Icon(Icons.broken_image),
+            ),
+    ),
+  );
+}
 }

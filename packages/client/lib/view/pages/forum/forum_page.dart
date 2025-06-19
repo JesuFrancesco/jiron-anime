@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:jiron_anime/view/components/custom_layout.dart';
@@ -7,8 +8,9 @@ import 'package:jiron_anime/view/theme/colors.dart';
 import 'forum_detail_page.dart';
 import 'package:jiron_anime/view/pages/forum/forum_users.dart';
 
+import 'package:jiron_anime/view/pages/forum/create_forum_page.dart';
 
-
+import 'package:jiron_anime/view/components/custom_appbar.dart';
 class ForumPost {
   final String username;
   final String avatarUrl;
@@ -41,7 +43,7 @@ final List<ForumPost> forumPosts = [
     likes: 20,
     shares: 5,
     imageUrl: 'https://i.blogs.es/dfe352/shingeki-no-kyojin/1366_2000.jpeg',
-    userText:"a niga",
+    userText:"Sinceramente, el final de SNK me dejó con sentimientos encontrados. Por un lado, entiendo el mensaje de ciclo, libertad y peso de las decisiones, pero por otro… siento que varios personajes merecían algo distinto. Aun así, no puedo negar que fue una obra impactante de principio a fin. Me dolió, me hizo pensar y sobre todo, me dejó reflexionando sobre la humanidad. No fue perfecto, pero fue valiente.",
     initialComments: [
       ForumComment(
         username: users[0].name,
@@ -62,7 +64,7 @@ final List<ForumPost> forumPosts = [
     likes: 15,
     shares: 2,
     imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQb2R6GZxPQq0gwJj_FYVTL354y1l7Oh3usDg&s',
-    userText:"a niga 2",
+    userText:"Bakugo comenzó como el típico bully arrogante, pero su desarrollo fue una de las sorpresas más sólidas de My Hero Academia. Detrás de su agresividad hay culpa, inseguridad y un deseo profundo de ser digno del símbolo de la paz. Lo que más me impactó fue cómo, a pesar de sus defectos, empezó a entender a Deku y a reconocer sus propias fallas. Eso lo hace humano, complejo, y por eso lo considero un personaje tridimensional",
     initialComments: [
       ForumComment(
         username: users[0].name,
@@ -85,21 +87,9 @@ class ForumPage extends StatelessWidget {
         child: Column(
           children: [
             // AppBar personalizada
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                
-                const Text(
-                  'Foros',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                  ),
-                ),
-                AuthController.getClipOvalAvatar(),
-              ],
-            ),
+            const CustomAppbar(title: "Foros"),
             12.pv,
+            
             // Banner canal
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 8),
@@ -204,7 +194,7 @@ class ForumPage extends StatelessWidget {
               const SizedBox(width: 10),
               ClipRRect(
                 borderRadius: BorderRadius.circular(8),
-                child: Image.network(
+                child: imageWidget(
                   post.imageUrl,
                   width: 80,
                   height: 80,
@@ -221,11 +211,21 @@ class ForumPage extends StatelessWidget {
           ],
         ),
       ),
+        floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Get.to(() => const CreateForumPage())!.then((_) {
+          (context as Element).reassemble(); // <- fuerza reconstrucción
+        });
+        },
+        backgroundColor: const Color(0xFFB22525),
+        child: const Icon(Icons.add, color: Colors.white),
+      ),
     );
   }
 
    Widget _iconText({required IconData icon, required String text, VoidCallback? onTap}) {
     return GestureDetector(
+      
       onTap: onTap,
       child: Row(
         children: [
@@ -236,5 +236,25 @@ class ForumPage extends StatelessWidget {
       ),
     );
   }
+  Widget imageWidget(String path, {double? width, double? height, BoxFit? fit}) {
+  return path.startsWith('/')
+      ? Image.file(
+          File(path),
+          width: width,
+          height: height,
+          fit: fit,
+          errorBuilder: (context, error, stackTrace) =>
+              const Icon(Icons.broken_image),
+        )
+      : Image.network(
+          path,
+          width: width,
+          height: height,
+          fit: fit,
+          errorBuilder: (context, error, stackTrace) =>
+              const Icon(Icons.broken_image),
+        );
+}
+
 }
 
