@@ -59,10 +59,25 @@ class EventService {
 
     final queryParams = {
       "orderBy[createdAt]": "desc",
-      "include[eventType]": true,
-      // TODO: obtener solo campos necesarios (Omit no funciona)
-      // "omit[description]": true,
-      // "omit[duration]": true,
+
+      // Seleccionar solo los campos necesarios
+      "select[id]": true,
+      "select[title]": true,
+      "select[description]": true,
+      "select[capacity]": true,
+      "select[date]": true,
+      "select[time]": true,
+      "select[isVirtual]": true,
+      "select[isOnCampus]": true,
+      "select[edificio]": true,
+      "select[salon]": true,
+      "select[location]": true,
+      "select[isFree]": true,
+      "select[price]": true,
+      "select[mainImageUrl]": true,
+
+      // Relación a la tabla EventType
+      "select[eventType]": true,
     };
 
     final res = await http.get(
@@ -83,9 +98,33 @@ class EventService {
   Future<Event> fetchEventById(String id) async {
     final queryParam = {
       "where[id]": id,
-      "include[eventType]": true,
-      "include[attendees]": true,
-      "include[profile]": true,
+
+      // Seleccionar solo los campos necesarios
+      "select[id]": true,
+      "select[title]": true,
+      "select[mainImageUrl]": true,
+      "select[isFree]": true,
+      "select[price]": true,
+      "select[date]": true,
+      "select[time]": true,
+      "select[profileId]": true,
+      "select[isVirtual]": true,
+      "select[isOnCampus]": true,
+      "select[description]": true,
+      "select[activities]": true,
+      "select[duration]": true,
+      "select[capacity]": true,
+      "select[edificio]": true,
+      "select[salon]": true,
+      "select[location]": true,
+
+      // Relación a otras tablas
+      "select[attendees]": true,
+      "select[eventType]": true,
+      "select[profile]": true,
+      // "select[profile][select][email]": true,
+      // "select[eventType][select][name]": true,
+      // "select[attendees][select][profileId]": true,
     };
 
     final res = await http.get(
