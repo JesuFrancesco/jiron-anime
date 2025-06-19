@@ -389,20 +389,33 @@ class CreateEditEventForm extends StatelessWidget {
                 'Ubicación',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
-              Row(
+              Wrap(
+                spacing: 8,
+                runSpacing: -12,
+                crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
-                  Radio<String>(
-                    value: 'Dentro de la Universidad',
-                    groupValue: c.location.value,
-                    onChanged: (value) => c.location.value = value!,
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Radio<String>(
+                        value: 'Dentro de la Universidad',
+                        groupValue: c.location.value,
+                        onChanged: (value) => c.location.value = value!,
+                      ),
+                      const Text('Dentro de la Universidad'),
+                    ],
                   ),
-                  const Text('Dentro de la Universidad'),
-                  Radio<String>(
-                    value: 'Fuera de la Universidad',
-                    groupValue: c.location.value,
-                    onChanged: (value) => c.location.value = value!,
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Radio<String>(
+                        value: 'Fuera de la Universidad',
+                        groupValue: c.location.value,
+                        onChanged: (value) => c.location.value = value!,
+                      ),
+                      const Text('Fuera de la Universidad'),
+                    ],
                   ),
-                  const Text('Fuera de la Universidad'),
                 ],
               ),
               const SizedBox(height: 8),

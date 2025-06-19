@@ -45,6 +45,11 @@ class _EventsPageState extends State<EventsPage> {
                         style: IconButton.styleFrom(iconSize: 28),
                         icon: const Icon(Icons.add),
                         onPressed: () async {
+                          if (!AuthService.isLoggedIn) {
+                            Get.toNamed("/sign-in");
+                            return;
+                          }
+
                           final result = await Get.to(
                             () => const CreateEditEventPage(isEdit: false),
                             transition: Transition.cupertino,
