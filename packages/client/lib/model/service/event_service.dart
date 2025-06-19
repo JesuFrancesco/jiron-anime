@@ -117,6 +117,7 @@ class EventService {
       "select[edificio]": true,
       "select[salon]": true,
       "select[location]": true,
+      "select[eventTypeId]": true,
 
       // Relación a otras tablas
       "select[attendees]": true,
