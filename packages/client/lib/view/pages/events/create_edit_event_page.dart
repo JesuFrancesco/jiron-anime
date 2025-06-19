@@ -19,13 +19,20 @@ class CreateEditEventPage extends StatelessWidget {
       CreateEditEventController(initialEvent: event),
       tag: tag,
     );
+
+    var brightness = Get.mediaQuery.platformBrightness;
+    bool isDarkMode = brightness == Brightness.dark;
+
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           stops: [0.0, 0.5, 1],
-          colors: AppColors.backgroundLinearGradientColors,
+          colors:
+              isDarkMode
+                  ? AppColors.darkBackgroundLinearGradientColors
+                  : AppColors.backgroundLinearGradientColors,
         ),
       ),
       child: Scaffold(
@@ -33,11 +40,7 @@ class CreateEditEventPage extends StatelessWidget {
         appBar: AppBar(
           title: Text(
             isEdit ? 'Editar Evento' : 'Crear Evento',
-            style: const TextStyle(
-              fontSize: 26,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
-            ),
+            style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
           ),
           backgroundColor: Colors.transparent,
           elevation: 0,

@@ -27,8 +27,9 @@ class SingleEventController extends GetxController {
       event.value = fetched;
     } catch (e) {
       error.value = 'No se pudo cargar el evento';
+    } finally {
+      isLoading.value = false;
     }
-    isLoading.value = false;
   }
 
   Future<bool> deleteEvent() async {

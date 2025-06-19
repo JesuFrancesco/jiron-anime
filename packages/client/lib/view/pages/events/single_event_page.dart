@@ -1,7 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:jiron_anime/utils/event_format_utils.dart';
 import 'package:jiron_anime/view/pages/events/create_edit_event_page.dart';
+import 'package:jiron_anime/view/pages/events/widgets/image_placeholder.dart';
 import 'package:jiron_anime/view/theme/colors.dart';
 import 'package:jiron_anime/model/service/auth_service.dart';
 import 'package:jiron_anime/viewmodel/controllers/events/single_event_controller.dart';
@@ -15,15 +17,30 @@ class SingleEventPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Get.theme;
     final colors = theme.colorScheme;
+    var brightness = Get.mediaQuery.platformBrightness;
+    bool isDarkMode = brightness == Brightness.dark;
+
     final SingleEventController c = Get.put(SingleEventController(eventId));
     bool wasEdited = false;
 
     return Obx(() {
       if (c.isLoading.value) {
-        return const Center(child: CircularProgressIndicator());
+        return Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              stops: [0.0, 0.5, 1],
+              colors:
+                  isDarkMode
+                      ? AppColors.darkBackgroundLinearGradientColors
+                      : AppColors.backgroundLinearGradientColors,
+            ),
+          ),
+          child: const Center(child: CircularProgressIndicator()),
+        );
       }
 
-      // TODO: Cambiar por algo generico
       if (c.error.value.isNotEmpty) {
         return Center(child: Text(c.error.value));
       }
@@ -34,12 +51,15 @@ class SingleEventPage extends StatelessWidget {
       }
 
       return Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             stops: [0.0, 0.5, 1],
-            colors: AppColors.backgroundLinearGradientColors,
+            colors:
+                isDarkMode
+                    ? AppColors.darkBackgroundLinearGradientColors
+                    : AppColors.backgroundLinearGradientColors,
           ),
         ),
         child: Scaffold(
@@ -69,11 +89,14 @@ class SingleEventPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Image.network(
-                  event.mainImageUrl!,
+                CachedNetworkImage(
+                  imageUrl: event.mainImageUrl!,
                   height: 250,
                   width: double.infinity,
                   fit: BoxFit.cover,
+                  placeholder: (context, url) => const ImagePlaceholder(),
+                  errorWidget:
+                      (context, url, error) => const ImagePlaceholder(),
                 ),
 
                 const SizedBox(height: 10),
