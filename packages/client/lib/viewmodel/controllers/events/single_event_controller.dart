@@ -54,7 +54,6 @@ class SingleEventController extends GetxController {
     }
   }
 
-  // TODO: pasar formateo a utils
   bool checkIfEventIsPast() {
     if (event.value == null || event.value!.date == null) return false;
 

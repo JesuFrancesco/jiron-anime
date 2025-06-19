@@ -28,7 +28,6 @@ class EventsController extends GetxController {
     fetchEvents();
   }
 
-  // TODO: Al agregar el botón de cargar más, el fetch de eventos proximos o pasados se debe hacer aparte
   Future<void> fetchEvents() async {
     isLoading.value = true;
 

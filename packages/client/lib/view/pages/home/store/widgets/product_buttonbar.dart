@@ -57,7 +57,7 @@ class _TagsBarButtonState extends State<TagsBarButton> {
                   ),
                 );
               } else if (snapshot.hasError) {
-                return Center(child: Text('Algo salió mal...'));
+                return const Center(child: Text('Algo salió mal...'));
               } else {
                 return Expanded(
                   child: SingleChildScrollView(

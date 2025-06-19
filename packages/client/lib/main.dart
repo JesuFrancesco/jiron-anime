@@ -96,12 +96,12 @@ class MainApp extends StatelessWidget {
         ),
         GetPage(
           name: '/create-event',
-          page: () => CreateEditEventPage(isEdit: false),
+          page: () => const CreateEditEventPage(isEdit: false),
           middlewares: [AuthMiddleware()],
         ),
         GetPage(
           name: '/edit-event',
-          page: () => CreateEditEventPage(isEdit: true),
+          page: () => const CreateEditEventPage(isEdit: true),
           middlewares: [AuthMiddleware()],
         ),
       ],
