@@ -1,3 +1,10 @@
+# 1.0.2
+
+- chore: add background color to snackbars
+- fix: add eventType to queryparams
+- chore: remove TODO comments and use const constructors
+- perf: select only necessary fields in event queries
+
 # 1.0.1
 
 - fix: redirect to sign-in if user is not logged in before creating an event | fix: improve layout of location radio buttons in create/edit event form
