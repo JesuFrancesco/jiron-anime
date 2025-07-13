@@ -2,11 +2,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'forum_page.dart'; // Para acceder a forumPosts
-import 'forum_users.dart'; // Para usar usuarios
+import 'forum_page.dart';
 import 'package:jiron_anime/view/components/auth_controller.dart';
-
-
 
 class CreateForumPage extends StatefulWidget {
   const CreateForumPage({super.key});
@@ -40,14 +37,17 @@ class _CreateForumPageState extends State<CreateForumPage> {
 
     final newPost = ForumPost(
       username: AuthController.fullName ?? 'Anónimo',
-      avatarUrl: AuthController.profileImageUrl ?? 'https://via.placeholder.com/150',
+      avatarUrl:
+          AuthController.profileImageUrl ?? 'https://via.placeholder.com/150',
       question: title,
       userText: content,
       likes: 0,
       shares: 0,
-      imageUrl: _image != null
-          ? _image!.path // Temporal: usaremos path local
-          : 'https://via.placeholder.com/150', // Imagen por defecto
+      imageUrl:
+          _image != null
+              ? _image!
+                  .path // Temporal: usaremos path local
+              : 'https://via.placeholder.com/150', // Imagen por defecto
       initialComments: [],
     );
 
@@ -61,7 +61,7 @@ class _CreateForumPageState extends State<CreateForumPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Crear Foro'),
-        backgroundColor: isDarkMode ? Color(0xFFB22525):Color(0xFFFFD6A5) ,
+        backgroundColor: isDarkMode ? Color(0xFFB22525) : Color(0xFFFFD6A5),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -109,8 +109,12 @@ class _CreateForumPageState extends State<CreateForumPage> {
                 icon: const Icon(Icons.send),
                 label: const Text('Publicar'),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: isDarkMode ? Color(0xFFB22525):Color(0xFFFFD6A5) ,
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  backgroundColor:
+                      isDarkMode ? Color(0xFFB22525) : Color(0xFFFFD6A5),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 12,
+                  ),
                 ),
               ),
             ],

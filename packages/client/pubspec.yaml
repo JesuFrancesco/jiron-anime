@@ -25,6 +25,7 @@ dependencies:
   latlong2: ^0.9.1
   location: ^8.0.0
   logger: ^2.5.0
+  markdown_widget: ^2.3.2+8
   path: ^1.9.1
   shared_preferences: ^2.5.3
   smooth_page_indicator: ^1.2.1

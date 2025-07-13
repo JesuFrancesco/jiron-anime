@@ -76,10 +76,13 @@ class _SettingsPageState extends State<SettingsPage> {
                       vertical: 16,
                     ),
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         AuthController.getClipOvalAvatar(),
-                        const SizedBox(width: 10),
-                        Expanded(
+
+                        16.ph,
+
+                        Flexible(
                           child: Text(
                             AuthController.fullName != null
                                 ? AuthController.fullName!

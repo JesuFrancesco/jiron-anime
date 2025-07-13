@@ -5,7 +5,6 @@ import 'package:jiron_anime/viewmodel/controllers/productos_controller.dart';
 import 'package:jiron_anime/view/components/custom_appbar.dart';
 import 'package:jiron_anime/view/pages/home/store/widgets/product_item.dart';
 import 'package:jiron_anime/view/components/custom_layout.dart';
-import 'package:jiron_anime/view/components/small_circular_indicator.dart';
 import 'package:jiron_anime/view/theme/colors.dart';
 import 'package:jiron_anime/utils/sizedbox_entension.dart';
 import 'package:jiron_anime/utils/show_dialog.dart';
@@ -77,6 +76,7 @@ class _BusquedaPageState extends State<BusquedaPage> {
                                 )
                               else
                                 GridView.builder(
+                                  padding: EdgeInsets.zero,
                                   physics: const NeverScrollableScrollPhysics(),
                                   shrinkWrap: true,
                                   gridDelegate:
@@ -172,16 +172,14 @@ class _BusquedaPageState extends State<BusquedaPage> {
             ),
           ),
           10.ph,
-          isLoading.value
-              ? const SmallCircularIndicator()
-              : ElevatedButton(
-                onPressed: _onSearchPressed,
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  backgroundColor: AppColors.primaryColor,
-                ),
-                child: const Text("Buscar"),
-              ),
+          ElevatedButton(
+            onPressed: isLoading.value ? null : _onSearchPressed,
+            style: ElevatedButton.styleFrom(
+              foregroundColor: Colors.white,
+              backgroundColor: AppColors.primaryColor,
+            ),
+            child: const Text("Buscar"),
+          ),
         ],
       ),
     );

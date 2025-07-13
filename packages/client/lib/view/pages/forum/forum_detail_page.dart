@@ -1,11 +1,12 @@
 import 'dart:io';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:jiron_anime/view/components/custom_appbar.dart';
 import 'package:jiron_anime/view/components/custom_layout.dart';
 import 'package:jiron_anime/view/components/auth_controller.dart';
 import 'package:jiron_anime/utils/sizedbox_entension.dart';
-import 'package:jiron_anime/view/pages/forum/forum_page.dart'; // para ForumPost
-import 'package:jiron_anime/view/pages/forum/forum_users.dart';
+import 'package:jiron_anime/view/pages/forum/forum_page.dart';
+import 'package:jiron_anime/view/theme/colors.dart' show AppColors;
 
 class ForumComment {
   final String username;
@@ -43,15 +44,14 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
     setState(() {
       final newComment = ForumComment(
         username: AuthController.fullName ?? 'Anónimo',
-        avatarUrl: AuthController.profileImageUrl ?? 'https://via.placeholder.com/150',
+        avatarUrl:
+            AuthController.profileImageUrl ?? 'https://via.placeholder.com/150',
         content: _commentController.text.trim(),
       );
       staticComments.add(newComment);
-      widget.post.comments.add(
-        newComment,
-      );
-      _commentController.clear(); 
-      FocusScope.of(context).unfocus();// <-- importante para reflejar fuera
+      widget.post.comments.add(newComment);
+      _commentController.clear();
+      FocusScope.of(context).unfocus(); // <-- importante para reflejar fuera
     });
   }
 
@@ -60,18 +60,10 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     final post = widget.post;
     return Scaffold(
-      
       body: CustomLayout(
         child: Column(
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                BackButton(color: isDarkMode ? Colors.white : Colors.black),
-                const Text('Post', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
-                AuthController.getClipOvalAvatar(),
-              ],
-            ),
+            CustomAppbar(title: ''),
             12.pv,
             Expanded(
               child: SingleChildScrollView(
@@ -80,18 +72,19 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
                     Container(
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-  // Usa color sólido en modo oscuro, gradiente en modo claro
+                        // Usa color sólido en modo oscuro, gradiente en modo claro
                         color: isDarkMode ? Colors.grey[850] : null,
-                        gradient: isDarkMode
-                            ? null
-                            : LinearGradient(
-                                colors: [
-                                  const Color(0xFFFFD6A5),
-                                  const Color(0xFFFFC3A0),
-                                ],
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                              ),
+                        gradient:
+                            isDarkMode
+                                ? null
+                                : LinearGradient(
+                                  colors: [
+                                    const Color(0xFFFFD6A5),
+                                    const Color(0xFFFFC3A0),
+                                  ],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                ),
                         border: Border.all(color: Colors.black),
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -116,12 +109,17 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
                           8.pv,
                           Text(
                             post.question,
-                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: isDarkMode ? Colors.white : Color(0xFFB22525)),
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color:
+                                  isDarkMode
+                                      ? Colors.white
+                                      : AppColors.primaryColor,
+                            ),
                           ),
                           8.pv,
-                          Text(
-                            post.userText,
-                          ),
+                          Text(post.userText),
                           8.pv,
                           ClipRRect(
                             borderRadius: BorderRadius.circular(8),
@@ -131,14 +129,14 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
                           Row(
                             children: [
                               _iconText(
-                                    Icons.thumb_up,
-                                    post.likes.toString(),
-                                    onTap: () {
-                                      setState(() {
-                                        post.likes++;
-                                      });
-                                    },
-                                  ),
+                                Icons.thumb_up,
+                                post.likes.toString(),
+                                onTap: () {
+                                  setState(() {
+                                    post.likes++;
+                                  });
+                                },
+                              ),
 
                               8.ph,
                               _iconText(
@@ -160,12 +158,17 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: isDarkMode ? Colors.white : Color(0xFFB22525),
+                          color:
+                              isDarkMode
+                                  ? Colors.white
+                                  : AppColors.primaryColor,
                         ),
                       ),
                     ),
 
-                    ListView.builder(
+                    ListView.separated(
+                      padding: EdgeInsets.zero,
+                      separatorBuilder: (context, index) => 8.pv,
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
                       itemCount: staticComments.length,
@@ -205,7 +208,7 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
                 ),
                 IconButton(
                   onPressed: _addComment,
-                  icon: const Icon(Icons.send, color: Color(0xFFB22525)),
+                  icon: const Icon(Icons.send, color: AppColors.primaryColor),
                 ),
               ],
             ),
@@ -216,57 +219,63 @@ class _ForumDetailPageState extends State<ForumDetailPage> {
     );
   }
 
-  Widget _iconText(IconData icon, String text, {VoidCallback? onTap, double size = 20}) {
-  return GestureDetector(
-    onTap: onTap,
-    child: Row(
-      children: [
-        Icon(icon, size: size),
-        4.ph,
-        Text(text),
-      ],
-    ),
-  );
-}
-Widget imageWidget(String path, {double? width, double? height, BoxFit? fit}) {
-  final isLocal = path.startsWith('/');
+  Widget _iconText(
+    IconData icon,
+    String text, {
+    VoidCallback? onTap,
+    double size = 20,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Row(children: [Icon(icon, size: size), 4.ph, Text(text)]),
+    );
+  }
 
-  return GestureDetector(
-    onTap: () {
-      showDialog(
-        context: Get.context!,
-        builder: (_) => Dialog(
-          backgroundColor: Colors.transparent,
-          insetPadding: const EdgeInsets.all(10),
-          child: GestureDetector(
-            onTap: () => Navigator.pop(Get.context!),
-            child: InteractiveViewer(
-              child: isLocal
-                  ? Image.file(File(path))
-                  : Image.network(path),
-            ),
-          ),
-        ),
-      );
-    },
-    child: ClipRRect(
-      borderRadius: BorderRadius.circular(8),
-      child: isLocal
-          ? Image.file(
-              File(path),
-              width: width,
-              height: height,
-              fit: fit,
-              errorBuilder: (_, __, ___) => const Icon(Icons.broken_image),
-            )
-          : Image.network(
-              path,
-              width: width,
-              height: height,
-              fit: fit,
-              errorBuilder: (_, __, ___) => const Icon(Icons.broken_image),
-            ),
-    ),
-  );
-}
+  Widget imageWidget(
+    String path, {
+    double? width,
+    double? height,
+    BoxFit? fit,
+  }) {
+    final isLocal = path.startsWith('/');
+
+    return GestureDetector(
+      onTap: () {
+        showDialog(
+          context: Get.context!,
+          builder:
+              (_) => Dialog(
+                backgroundColor: Colors.transparent,
+                insetPadding: const EdgeInsets.all(10),
+                child: GestureDetector(
+                  onTap: () => Navigator.pop(Get.context!),
+                  child: InteractiveViewer(
+                    child:
+                        isLocal ? Image.file(File(path)) : Image.network(path),
+                  ),
+                ),
+              ),
+        );
+      },
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(8),
+        child:
+            isLocal
+                ? Image.file(
+                  File(path),
+                  width: width,
+                  height: height,
+                  fit: fit,
+                  errorBuilder: (_, __, ___) => const Icon(Icons.broken_image),
+                )
+                : Image.network(
+                  path,
+                  width: width,
+                  height: height,
+                  fit: fit,
+                  errorBuilder: (_, __, ___) => const Icon(Icons.broken_image),
+                ),
+      ),
+    );
+  }
 }

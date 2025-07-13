@@ -11,7 +11,7 @@ class CustomAppbar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         if (Navigator.of(context).canPop()) const BotonRetroceso(),
@@ -22,7 +22,7 @@ class CustomAppbar extends StatelessWidget {
               Text(
                 title,
                 style: Theme.of(context).textTheme.titleLarge,
-                textAlign: TextAlign.center,
+                textAlign: TextAlign.left,
                 overflow: TextOverflow.visible,
               ),
             ],

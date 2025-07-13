@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:jiron_anime/model/entity/local_message.dart';
 import 'package:jiron_anime/view/components/auth_controller.dart';
+import 'package:markdown_widget/widget/all.dart';
 
 class MessageWidget extends StatelessWidget {
   final LocalMessage message;
@@ -39,10 +40,11 @@ class MessageWidget extends StatelessWidget {
                     if (message.message.isNotEmpty)
                       Padding(
                         padding: const EdgeInsets.only(top: 4.0),
-                        child: Text(
-                          message.message,
-                          style: const TextStyle(fontSize: 14),
-                        ),
+                        child: MarkdownBlock(data: message.message),
+                        // child: Text(
+                        //   message.message,
+                        //   style: const TextStyle(fontSize: 14),
+                        // ),
                       ),
                     if (message.images.isNotEmpty)
                       Padding(

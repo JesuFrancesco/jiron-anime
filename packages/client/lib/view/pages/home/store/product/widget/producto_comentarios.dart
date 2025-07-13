@@ -223,6 +223,7 @@ class ReseniaWidget extends StatelessWidget {
               resenia.ratingAttachments!.isNotEmpty)
             GridView.builder(
               physics: const NeverScrollableScrollPhysics(),
+              padding: EdgeInsets.zero,
               shrinkWrap: true,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3,

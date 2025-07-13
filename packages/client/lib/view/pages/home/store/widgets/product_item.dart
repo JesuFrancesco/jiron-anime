@@ -16,39 +16,39 @@ class ProductItem extends StatelessWidget {
       children: [
         SizedBox(
           height: 250,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child:
-                (producto.productAttachments != null &&
-                        producto.productAttachments!.isNotEmpty)
-                    ? Image.network(
-                      producto.productAttachments![0].imageUrl!,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Container(
-                          color: Colors.white..withValues(alpha: 0.3),
-                          child: const Center(
-                            child: Icon(
-                              Icons.help_outline,
-                              color: Colors.grey,
-                              size: 40,
+          child: GestureDetector(
+            onTap: () => Get.to(() => ProductoPage(producto: producto)),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child:
+                  (producto.productAttachments != null &&
+                          producto.productAttachments!.isNotEmpty)
+                      ? Image.network(
+                        producto.productAttachments![0].imageUrl!,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Container(
+                            color: Colors.white..withValues(alpha: 0.3),
+                            child: const Center(
+                              child: Icon(
+                                Icons.help_outline,
+                                color: Colors.grey,
+                                size: 40,
+                              ),
                             ),
+                          );
+                        },
+                      )
+                      : Container(
+                        color: Colors.white..withValues(alpha: 0.3),
+                        child: const Center(
+                          child: Icon(
+                            Icons.help_outline,
+                            color: Colors.grey,
+                            size: 40,
                           ),
-                        );
-                      },
-                    )
-                    : Container(
-                      color:
-                          Colors.white..withValues(
-                            alpha: 0.3,
-                          ), // Semi-transparent white background
-                      child: const Center(
-                        child: Icon(
-                          Icons.help_outline,
-                          color: Colors.grey,
-                          size: 40,
                         ),
                       ),
-                    ),
+            ),
           ),
         ),
         5.pv,

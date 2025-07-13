@@ -157,6 +157,7 @@ class _TiendaPageState extends State<TiendaPage> {
     }
 
     return GridView.builder(
+      padding: EdgeInsets.zero,
       physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
